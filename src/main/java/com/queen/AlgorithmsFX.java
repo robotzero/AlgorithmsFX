@@ -40,7 +40,7 @@ public class AlgorithmsFX extends Application {
         mainWindow.setPrefHeight(HEIGHT);
         mainWindow.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene scene = new Scene(mainWindow, WIDTH, HEIGHT);
-//        window.setUp();
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
