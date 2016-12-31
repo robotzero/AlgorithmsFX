@@ -1,7 +1,5 @@
 package com.queen;
 
-import com.queen.algs.Maze.Depth.Depth;
-import com.queen.algs.QuickFind.Window;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,7 +9,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
