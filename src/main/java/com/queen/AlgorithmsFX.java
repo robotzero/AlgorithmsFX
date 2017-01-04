@@ -1,16 +1,16 @@
 package com.queen;
 
+import com.queen.algs.IWindow;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class AlgorithmsFX extends Application {
 
@@ -24,22 +24,48 @@ public class AlgorithmsFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        int[] container = new int[10];
-        for (int i = 0; i < 10; i++) {
-            container[i] = i;
-        }
         GridPane mainWindow = new GridPane();
+        mainWindow.setGridLinesVisible(true);
+        Pane playPanel = new Pane();
+        playPanel.autosize();
+        playPanel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        playPanel.getChildren().add(new Rectangle(10, 10, 10, 10));
+        playPanel.setMaxWidth(Double.MAX_VALUE);
+        playPanel.setMaxHeight(Double.MAX_VALUE);
+
         VBox leftPanel = new VBox();
         Button quickFind = new Button("Quick Find");
         Button quickUnion = new Button("Quick Union");
         Button weightedQuickUnion = new Button("Weighted Quick  Union");
         Collections.addAll(buttons, quickFind, quickUnion, weightedQuickUnion);
         leftPanel.getChildren().addAll(buttons);
-        mainWindow.add(leftPanel, 1, 1);
+        mainWindow.add(leftPanel, 0, 0);
+        mainWindow.add(playPanel, 1, 0);
         mainWindow.setPrefWidth(WIDTH);
+        GridPane.setHgrow(playPanel, Priority.ALWAYS);
+        GridPane.setVgrow(playPanel, Priority.ALWAYS);
         mainWindow.setPrefHeight(HEIGHT);
-        mainWindow.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        mainWindow.setBackground(new Background(new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene scene = new Scene(mainWindow, WIDTH, HEIGHT);
+
+        Map<String, IWindow> windows = new HashMap<>();
+        windows.put("QuickUnion", new com.queen.algs.QuickUnion.View.Window());
+        windows.put("QuickFind", new com.queen.algs.QuickFind.View.Window());
+
+        playPanel.getChildren().addAll(windows.get("QuickUnion").getPane(), windows.get("QuickFind").getPane());
+        quickFind.setOnAction(event -> {
+            if (!windows.get("QuickFind").getPane().isVisible()) {
+                windows.get("QuickFind").getPane().setVisible(true);
+                windows.get("QuickUnion").getPane().setVisible(false);
+            }
+        });
+
+        quickUnion.setOnAction(event -> {
+            if (!windows.get("QuickUnion").getPane().isVisible()) {
+                windows.get("QuickFind").getPane().setVisible(false);
+                windows.get("QuickUnion").getPane().setVisible(true);
+            }
+        });
 
         primaryStage.setScene(scene);
         primaryStage.show();

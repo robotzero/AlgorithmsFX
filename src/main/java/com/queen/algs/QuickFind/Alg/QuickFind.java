@@ -1,13 +1,13 @@
-package com.queen.algs.QuickFind;
+package com.queen.algs.QuickFind.Alg;
 
-import javafx.scene.layout.Pane;
-
-public class Window extends Pane {
-
+public class QuickFind {
     private int[] container;
 
-    public Window(int[] container) {
-        this.container = container;
+    public QuickFind() {
+        this.container = new int[10];
+        for (int i = 0; i < 10; i++) {
+            this.container[i] = i;
+        }
     }
 
     public boolean connected(int p, int q) {

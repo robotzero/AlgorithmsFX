@@ -1,13 +1,14 @@
-package com.queen.algs.QuickUnion;
+package com.queen.algs.QuickUnion.Alg;
 
-import javafx.scene.layout.Pane;
-
-public class Window extends Pane {
+public class QuickUnion {
 
     private int[] container;
 
-    public Window(int[] container) {
-        this.container = container;
+    public QuickUnion() {
+        this.container = new int[10];
+        for (int i = 0; i < 10; i++) {
+            this.container[i] = i;
+        }
     }
 
     public boolean connected(int p, int q) {
