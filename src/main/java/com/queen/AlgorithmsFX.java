@@ -29,14 +29,13 @@ public class AlgorithmsFX extends Application {
         Pane playPanel = new Pane();
         playPanel.autosize();
         playPanel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        playPanel.getChildren().add(new Rectangle(10, 10, 10, 10));
         playPanel.setMaxWidth(Double.MAX_VALUE);
         playPanel.setMaxHeight(Double.MAX_VALUE);
 
         VBox leftPanel = new VBox();
         Button quickFind = new Button("Quick Find");
         Button quickUnion = new Button("Quick Union");
-        Button weightedQuickUnion = new Button("Weighted Quick  Union");
+        Button weightedQuickUnion = new Button("Weighted Quick Union");
         Collections.addAll(buttons, quickFind, quickUnion, weightedQuickUnion);
         leftPanel.getChildren().addAll(buttons);
         mainWindow.add(leftPanel, 0, 0);
@@ -47,7 +46,6 @@ public class AlgorithmsFX extends Application {
         mainWindow.setPrefHeight(HEIGHT);
         mainWindow.setBackground(new Background(new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene scene = new Scene(mainWindow, WIDTH, HEIGHT);
-
         Map<String, IWindow> windows = new HashMap<>();
         windows.put("QuickUnion", new com.queen.algs.QuickUnion.View.Window());
         windows.put("QuickFind", new com.queen.algs.QuickFind.View.Window());

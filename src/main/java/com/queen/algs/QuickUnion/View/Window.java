@@ -29,4 +29,8 @@ public class Window implements IWindow {
     public boolean isVisible() {
         return this.container.isVisible();
     }
+
+    public void setUpPane() {
+
+    }
 }
