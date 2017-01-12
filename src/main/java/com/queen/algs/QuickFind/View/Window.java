@@ -10,6 +10,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.Map;
 
@@ -21,8 +22,8 @@ public class Window implements IWindow {
     public Window() {
         this.container = new Pane();
         this.container.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
-        this.container.getChildren().add(new Rectangle(20, 10, 20, 10));
         this.container.setVisible(false);
+        this.draw();
     }
 
     public Pane getPane() {
@@ -35,5 +36,10 @@ public class Window implements IWindow {
 
     public void draw() {
         Map<Integer, Person> dataContainer = quickFind.getDatContainer();
+        dataContainer.entrySet().forEach(entry -> {
+            Person person = entry.getValue();
+            this.container.getChildren().addAll(person.getRectangle());
+            this.container.getChildren().addAll(new Text(person.getName()));
+        });
     }
 }

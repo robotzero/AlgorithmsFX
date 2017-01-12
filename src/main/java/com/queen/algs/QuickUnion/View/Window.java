@@ -19,7 +19,7 @@ public class Window implements IWindow {
         this.container.setBackground(new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY)));
         this.container.setMaxHeight(Double.MAX_VALUE);
         this.container.setMaxWidth(Double.MAX_VALUE);
-        this.container.getChildren().add(new Rectangle(20, 10, 20, 10));
+        this.container.getChildren().add(new Rectangle(50, 50, 50, 50));
     }
 
     public Pane getPane() {

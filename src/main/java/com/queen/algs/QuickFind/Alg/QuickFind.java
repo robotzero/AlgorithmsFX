@@ -18,7 +18,7 @@ public class QuickFind {
                         id,
                         Integer.toString(id),
                         new Rectangle(10, 10, 10, 10),
-                        new Color(234, 222, 122, 0)))
+                        new Color(0.5, 0.5, 0.5, 0)))
                 .collect(Collectors.toMap(Person::getId, entry -> entry));
 //        this.container = new int[10];
 //        for (int i = 0; i < 10; i++) {
