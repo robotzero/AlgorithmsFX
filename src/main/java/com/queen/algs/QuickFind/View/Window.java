@@ -1,6 +1,8 @@
 package com.queen.algs.QuickFind.View;
 
 import com.queen.algs.IWindow;
+import com.queen.algs.QuickFind.Alg.QuickFind;
+import com.queen.algs.QuickUnion.Person;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -9,9 +11,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Map;
+
 public class Window implements IWindow {
 
     private Pane container;
+    private final QuickFind quickFind = new QuickFind();
 
     public Window() {
         this.container = new Pane();
@@ -26,5 +31,9 @@ public class Window implements IWindow {
 
     public boolean isVisible() {
         return this.container.isVisible();
+    }
+
+    public void draw() {
+        Map<Integer, Person> dataContainer = quickFind.getDatContainer();
     }
 }

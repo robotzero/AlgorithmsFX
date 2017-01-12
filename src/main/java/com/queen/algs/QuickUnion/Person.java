@@ -14,7 +14,8 @@ public class Person {
     private Color color;
     private List<Integer> friends = new ArrayList<>();
 
-    public Person(String name, Rectangle picture, Color color) {
+    public Person(int id, String name, Rectangle picture, Color color) {
+        this.id = id;
         this.name = name;
         this.picture = picture;
         this.color = color;
@@ -22,5 +23,21 @@ public class Person {
 
     public void addFriend(Integer id) {
         friends.add(id);
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Rectangle getRectangle() {
+        return this.picture;
+    }
+
+    public Color getColor() {
+        return this.color;
     }
 }
