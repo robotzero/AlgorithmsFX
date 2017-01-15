@@ -1,6 +1,7 @@
 package com.queen.algs.QuickUnion;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
@@ -12,13 +13,15 @@ public class Person {
     private String name;
     private Rectangle picture;
     private Color color;
+    private Circle circle;
     private List<Integer> friends = new ArrayList<>();
 
-    public Person(int id, String name, Rectangle picture, Color color) {
+    public Person(int id, String name, Rectangle picture, Color color, Circle circle) {
         this.id = id;
         this.name = name;
         this.picture = picture;
         this.color = color;
+        this.circle = circle;
     }
 
     public void addFriend(Integer id) {
@@ -39,5 +42,9 @@ public class Person {
 
     public Color getColor() {
         return this.color;
+    }
+
+    public Circle getCircle() {
+        return this.circle;
     }
 }

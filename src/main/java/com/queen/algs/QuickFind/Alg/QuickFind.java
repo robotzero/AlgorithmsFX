@@ -2,6 +2,7 @@ package com.queen.algs.QuickFind.Alg;
 
 import com.queen.algs.QuickUnion.Person;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Map;
@@ -20,11 +21,17 @@ public class QuickFind {
                     rectangle.setStroke(Color.BLACK);
                     rectangle.setX(id * 180);
                     rectangle.setY(200);
+                    Circle circle = new Circle(10, 10, 10, Color.RED);
+                    circle.setStroke(Color.BLACK);
+                    circle.setVisible(false);
+                    circle.setCenterX(rectangle.getX() + rectangle.getWidth() / 2);
+                    circle.setCenterY(rectangle.getY() + rectangle.getHeight() / 2);
                     return new Person(
                             id,
                             Integer.toString(id),
                             rectangle,
-                            new Color(0.5, 0.5, 0.5, 0));
+                            new Color(0.5, 0.5, 0.5, 0),
+                            circle);
                 })
                 .collect(Collectors.toMap(Person::getId, entry -> entry));
 //        this.container = new int[10];

@@ -9,6 +9,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -44,7 +45,22 @@ public class Window implements IWindow {
             name.setText(person.getName());
             name.setFont(new Font(40));
             this.container.getChildren().addAll(person.getRectangle());
+            this.container.getChildren().addAll(person.getCircle());
             this.container.getChildren().addAll(name);
+            person.getRectangle().setOnMouseEntered(e -> {
+                if (!person.getCircle().isVisible()) {
+                    person.getCircle().setVisible(true);
+                }
+            });
+
+            person.getRectangle().setOnMouseExited(e -> {
+                person.getCircle().setVisible(false);
+            });
+
+            person.getRectangle().setOnMouseClicked(e -> {
+                
+            });
         });
+
     }
 }
