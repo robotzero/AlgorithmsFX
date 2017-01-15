@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -14,11 +15,17 @@ public class QuickFind {
 
     public QuickFind() {
         this.dataContainer = IntStream.range(0, 10)
-                .mapToObj(id -> new Person(
-                        id,
-                        Integer.toString(id),
-                        new Rectangle(10, 10, 10, 10),
-                        new Color(0.5, 0.5, 0.5, 0)))
+                .mapToObj(id -> {
+                    Rectangle rectangle = new Rectangle(100, 100, 100, 100);
+                    rectangle.setStroke(Color.BLACK);
+                    rectangle.setX(id * 180);
+                    rectangle.setY(200);
+                    return new Person(
+                            id,
+                            Integer.toString(id),
+                            rectangle,
+                            new Color(0.5, 0.5, 0.5, 0));
+                })
                 .collect(Collectors.toMap(Person::getId, entry -> entry));
 //        this.container = new int[10];
 //        for (int i = 0; i < 10; i++) {

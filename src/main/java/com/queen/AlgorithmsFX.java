@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -15,8 +14,8 @@ import java.util.*;
 public class AlgorithmsFX extends Application {
 
     private final List<Button> buttons = new ArrayList<>();
-    private final int WIDTH = 1024;
-    private final int HEIGHT = 768;
+    private final int WIDTH = 1920;
+    private final int HEIGHT = 1080;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,7 +27,7 @@ public class AlgorithmsFX extends Application {
         mainWindow.setGridLinesVisible(true);
         Pane playPanel = new Pane();
         playPanel.autosize();
-        playPanel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        playPanel.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
         playPanel.setMaxWidth(Double.MAX_VALUE);
         playPanel.setMaxHeight(Double.MAX_VALUE);
 
@@ -38,11 +37,14 @@ public class AlgorithmsFX extends Application {
         Button weightedQuickUnion = new Button("Weighted Quick Union");
         Collections.addAll(buttons, quickFind, quickUnion, weightedQuickUnion);
         leftPanel.getChildren().addAll(buttons);
+        leftPanel.setPrefWidth(Integer.MAX_VALUE);
         mainWindow.add(leftPanel, 0, 0);
         mainWindow.add(playPanel, 1, 0);
         mainWindow.setPrefWidth(WIDTH);
         GridPane.setHgrow(playPanel, Priority.ALWAYS);
         GridPane.setVgrow(playPanel, Priority.ALWAYS);
+        GridPane.setHgrow(leftPanel, Priority.SOMETIMES);
+        GridPane.setVgrow(leftPanel, Priority.SOMETIMES);
         mainWindow.setPrefHeight(HEIGHT);
         mainWindow.setBackground(new Background(new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene scene = new Scene(mainWindow, WIDTH, HEIGHT);
@@ -65,6 +67,8 @@ public class AlgorithmsFX extends Application {
             }
         });
 
+        primaryStage.setX(2516);
+        primaryStage.setY(100);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

@@ -9,7 +9,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.util.Map;
@@ -39,7 +38,7 @@ public class Window implements IWindow {
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getValue();
             this.container.getChildren().addAll(person.getRectangle());
-            this.container.getChildren().addAll(new Text(person.getName()));
+//            this.container.getChildren().addAll(new Text(person.getName()));
         });
     }
 }
