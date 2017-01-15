@@ -9,6 +9,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.Map;
@@ -37,8 +38,13 @@ public class Window implements IWindow {
         Map<Integer, Person> dataContainer = quickFind.getDatContainer();
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getValue();
+            Text name = new Text();
+            name.setX(person.getRectangle().getX());
+            name.setY(person.getRectangle().getY() - 25);
+            name.setText(person.getName());
+            name.setFont(new Font(40));
             this.container.getChildren().addAll(person.getRectangle());
-//            this.container.getChildren().addAll(new Text(person.getName()));
+            this.container.getChildren().addAll(name);
         });
     }
 }

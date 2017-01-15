@@ -26,6 +26,7 @@ public class AlgorithmsFX extends Application {
         GridPane mainWindow = new GridPane();
         mainWindow.setGridLinesVisible(true);
         Pane playPanel = new StackPane();
+        playPanel.setOpaqueInsets(new Insets(10, 10, 10, 10));
         playPanel.autosize();
         playPanel.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
         playPanel.setMaxWidth(Double.MAX_VALUE);
