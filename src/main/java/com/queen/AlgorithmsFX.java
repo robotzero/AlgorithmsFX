@@ -25,7 +25,7 @@ public class AlgorithmsFX extends Application {
     public void start(Stage primaryStage) {
         GridPane mainWindow = new GridPane();
         mainWindow.setGridLinesVisible(true);
-        Pane playPanel = new Pane();
+        Pane playPanel = new StackPane();
         playPanel.autosize();
         playPanel.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
         playPanel.setMaxWidth(Double.MAX_VALUE);
@@ -37,7 +37,6 @@ public class AlgorithmsFX extends Application {
         Button weightedQuickUnion = new Button("Weighted Quick Union");
         Collections.addAll(buttons, quickFind, quickUnion, weightedQuickUnion);
         leftPanel.getChildren().addAll(buttons);
-        leftPanel.setPrefWidth(Integer.MAX_VALUE);
         mainWindow.add(leftPanel, 0, 0);
         mainWindow.add(playPanel, 1, 0);
         mainWindow.setPrefWidth(WIDTH);
