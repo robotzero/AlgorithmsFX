@@ -3,6 +3,7 @@ package com.queen.algs.QuickFind.View;
 import com.queen.algs.IWindow;
 import com.queen.algs.QuickFind.Alg.QuickFind;
 import com.queen.algs.QuickUnion.Person;
+import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -17,13 +18,17 @@ import java.util.Map;
 
 public class Window implements IWindow {
 
-    private Pane container;
+    private final Pane container;
     private final QuickFind quickFind = new QuickFind();
+    private AnimationTimer circleFollowingTimer;
+    private Circle circleFollowing = new Circle();
 
     public Window() {
         this.container = new Pane();
         this.container.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
         this.container.setVisible(false);
+        this.circleFollowing.setFill(Color.DARKGREEN);
+        this.circleFollowing.setRadius(5);
         this.draw();
     }
 
@@ -37,6 +42,7 @@ public class Window implements IWindow {
 
     public void draw() {
         Map<Integer, Person> dataContainer = quickFind.getDatContainer();
+        this.container.getChildren().addAll(this.circleFollowing);
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getValue();
             Text name = new Text();
@@ -57,8 +63,22 @@ public class Window implements IWindow {
                 person.getCircle().setVisible(false);
             });
 
-            person.getRectangle().setOnMouseClicked(e -> {
-                
+            person.getRectangle().setOnMousePressed(e -> {
+                this.container.setOnMouseMoved(moved -> {
+                    if (this.circleFollowingTimer == null) {
+                        this.circleFollowingTimer = new AnimationTimer() {
+                            @Override
+                            public void handle(long now) {
+                                circleFollowing.setTranslateX(e.getSceneX());
+                                circleFollowing.setTranslateY(e.getSceneY());
+//                           circleFollowing.setCenterX(e.getX());
+//                           circleFollowing.setCenterY(e.getY());
+                                System.out.println(moved.getSceneX());
+                            }
+                        };
+                    }
+                    this.circleFollowingTimer.start();
+                });
             });
         });
 
