@@ -22,13 +22,14 @@ public class Window implements IWindow {
     private final QuickFind quickFind = new QuickFind();
     private AnimationTimer circleFollowingTimer;
     private Circle circleFollowing = new Circle();
+    private boolean pressingOnRectangle;
 
     public Window() {
         this.container = new Pane();
         this.container.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
         this.container.setVisible(false);
         this.circleFollowing.setFill(Color.DARKGREEN);
-        this.circleFollowing.setRadius(5);
+        this.circleFollowing.setRadius(10);
         this.draw();
     }
 
@@ -42,7 +43,6 @@ public class Window implements IWindow {
 
     public void draw() {
         Map<Integer, Person> dataContainer = quickFind.getDatContainer();
-        this.container.getChildren().addAll(this.circleFollowing);
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getValue();
             Text name = new Text();
@@ -50,9 +50,7 @@ public class Window implements IWindow {
             name.setY(person.getRectangle().getY() - 25);
             name.setText(person.getName());
             name.setFont(new Font(40));
-            this.container.getChildren().addAll(person.getRectangle());
-            this.container.getChildren().addAll(person.getCircle());
-            this.container.getChildren().addAll(name);
+            this.container.getChildren().addAll(person.getRectangle(), person.getCircle(), name);
             person.getRectangle().setOnMouseEntered(e -> {
                 if (!person.getCircle().isVisible()) {
                     person.getCircle().setVisible(true);
@@ -63,23 +61,15 @@ public class Window implements IWindow {
                 person.getCircle().setVisible(false);
             });
 
-            person.getRectangle().setOnMousePressed(e -> {
-                this.container.setOnMouseMoved(moved -> {
-                    if (this.circleFollowingTimer == null) {
-                        this.circleFollowingTimer = new AnimationTimer() {
-                            @Override
-                            public void handle(long now) {
-                                circleFollowing.setTranslateX(e.getSceneX());
-                                circleFollowing.setTranslateY(e.getSceneY());
-//                           circleFollowing.setCenterX(e.getX());
-//                           circleFollowing.setCenterY(e.getY());
-                                System.out.println(moved.getSceneX());
-                            }
-                        };
-                    }
-                    this.circleFollowingTimer.start();
-                });
-            });
+            person.getRectangle().setOnMousePressed(e -> this.pressingOnRectangle = true);
+        });
+
+        this.container.getChildren().add(this.circleFollowing);
+        this.container.setOnMouseMoved(e -> {
+            if (this.pressingOnRectangle) {
+                circleFollowing.setTranslateX(e.getX());
+                circleFollowing.setTranslateY(e.getY());
+            }
         });
 
     }
