@@ -66,14 +66,16 @@ public class Window implements IWindow {
                 double radius = person.getCircle().getRadius();
 
                 double distance = Math.pow(centerX - rectangleX, 2) + Math.pow(centerY - rectangleY, 2);
-                if (!(distance < Math.pow(radius, 2))) {
+                if (!(distance < Math.pow(radius, 2)) && !person.isRectanglePressed()) {
                     person.getCircle().setVisible(false);
                 }
             });
 
-            person.getRectangle().setOnMousePressed(e -> this.pressingOnRectangle = true);
+            person.getRectangle().setOnMousePressed(e -> person.setRectanglePressed(true));
+            person.getCircle().setOnMousePressed(e -> person.setRectanglePressed(true));
         });
 
+        this.circleFollowing.setMouseTransparent(true);
         this.container.getChildren().add(this.circleFollowing);
         this.container.setOnMouseMoved(e -> {
             if (this.pressingOnRectangle) {
