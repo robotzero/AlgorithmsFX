@@ -58,7 +58,17 @@ public class Window implements IWindow {
             });
 
             person.getRectangle().setOnMouseExited(e -> {
-                person.getCircle().setVisible(false);
+                double rectangleX = e.getX();
+                double rectangleY = e.getY();
+
+                double centerX = person.getCircle().getCenterX();
+                double centerY = person.getCircle().getCenterY();
+                double radius = person.getCircle().getRadius();
+
+                double distance = Math.pow(centerX - rectangleX, 2) + Math.pow(centerY - rectangleY, 2);
+                if (!(distance < Math.pow(radius, 2))) {
+                    person.getCircle().setVisible(false);
+                }
             });
 
             person.getRectangle().setOnMousePressed(e -> this.pressingOnRectangle = true);
@@ -67,10 +77,14 @@ public class Window implements IWindow {
         this.container.getChildren().add(this.circleFollowing);
         this.container.setOnMouseMoved(e -> {
             if (this.pressingOnRectangle) {
+                if (!circleFollowing.isVisible()) {
+                    circleFollowing.setVisible(true);
+                }
                 circleFollowing.setTranslateX(e.getX());
                 circleFollowing.setTranslateY(e.getY());
+            } else {
+                circleFollowing.setVisible(false);
             }
         });
-
     }
 }
