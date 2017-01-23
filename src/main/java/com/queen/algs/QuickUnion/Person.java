@@ -15,7 +15,7 @@ public class Person {
     private Color color;
     private Circle circle;
     private List<Integer> friends = new ArrayList<>();
-    private boolean rectanglePressed = false;
+    private boolean rectanglePressed;
 
     public Person(int id, String name, Rectangle picture, Color color, Circle circle) {
         this.id = id;

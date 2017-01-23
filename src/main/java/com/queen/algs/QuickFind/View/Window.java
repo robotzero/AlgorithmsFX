@@ -51,7 +51,12 @@ public class Window implements IWindow {
             name.setText(person.getName());
             name.setFont(new Font(40));
             this.container.getChildren().addAll(person.getRectangle(), person.getCircle(), name);
+
             person.getRectangle().setOnMouseEntered(e -> {
+                long numberOfPressedRectangles = dataContainer.entrySet().stream()
+                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+                        .count();
+
                 if (!person.getCircle().isVisible()) {
                     person.getCircle().setVisible(true);
                 }
@@ -65,14 +70,46 @@ public class Window implements IWindow {
                 double centerY = person.getCircle().getCenterY();
                 double radius = person.getCircle().getRadius();
 
+
                 double distance = Math.pow(centerX - rectangleX, 2) + Math.pow(centerY - rectangleY, 2);
-                if (!(distance < Math.pow(radius, 2)) && !person.isRectanglePressed()) {
-                    person.getCircle().setVisible(false);
+
+                long numberOfPressedRectangles = dataContainer.entrySet().stream()
+                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+                        .count();
+
+                if (!(distance < Math.pow(radius, 2))) {
+                    if (person.isRectanglePressed() == false) {
+                        person.getCircle().setVisible(false);
+                    }
                 }
             });
 
-            person.getRectangle().setOnMousePressed(e -> person.setRectanglePressed(true));
-            person.getCircle().setOnMousePressed(e -> person.setRectanglePressed(true));
+            person.getRectangle().setOnMousePressed(e -> {
+                long numberOfPressedRectangles = dataContainer.entrySet().stream()
+                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+                        .count();
+                
+                if (person.isRectanglePressed() && numberOfPressedRectangles == 2) {
+                    person.setRectanglePressed(false);
+                    person.getCircle().setVisible(false);
+                } else {
+                    person.setRectanglePressed(true);
+                }
+            });
+
+            person.getCircle().setMouseTransparent(true);
+//            person.getCircle().setOnMousePressed(e -> {
+//                long numberOfPressedRectangles = dataContainer.entrySet().stream()
+//                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+//                        .count();
+//
+//                if (person.getRectangle().isPressed() && numberOfPressedRectangles == 2) {
+//                    person.setRectanglePressed(false);
+//
+//                } else {
+//                    person.setRectanglePressed(true);
+//                }
+//            });
         });
 
         this.circleFollowing.setMouseTransparent(true);
