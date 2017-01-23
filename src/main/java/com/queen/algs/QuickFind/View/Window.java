@@ -3,7 +3,6 @@ package com.queen.algs.QuickFind.View;
 import com.queen.algs.IWindow;
 import com.queen.algs.QuickFind.Alg.QuickFind;
 import com.queen.algs.QuickUnion.Person;
-import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -11,18 +10,18 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class Window implements IWindow {
 
     private final Pane container;
     private final QuickFind quickFind = new QuickFind();
-    private AnimationTimer circleFollowingTimer;
     private Circle circleFollowing = new Circle();
-    private boolean pressingOnRectangle;
 
     public Window() {
         this.container = new Pane();
@@ -53,10 +52,6 @@ public class Window implements IWindow {
             this.container.getChildren().addAll(person.getRectangle(), person.getCircle(), name);
 
             person.getRectangle().setOnMouseEntered(e -> {
-                long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getValue().isRectanglePressed())
-                        .count();
-
                 if (!person.getCircle().isVisible()) {
                     person.getCircle().setVisible(true);
                 }
@@ -73,12 +68,8 @@ public class Window implements IWindow {
 
                 double distance = Math.pow(centerX - rectangleX, 2) + Math.pow(centerY - rectangleY, 2);
 
-                long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getValue().isRectanglePressed())
-                        .count();
-
                 if (!(distance < Math.pow(radius, 2))) {
-                    if (person.isRectanglePressed() == false) {
+                    if (!person.isRectanglePressed()) {
                         person.getCircle().setVisible(false);
                     }
                 }
@@ -88,42 +79,48 @@ public class Window implements IWindow {
                 long numberOfPressedRectangles = dataContainer.entrySet().stream()
                         .filter(entryset -> entryset.getValue().isRectanglePressed())
                         .count();
-                
-                if (person.isRectanglePressed() && numberOfPressedRectangles == 2) {
+
+                if (person.isRectanglePressed() && (numberOfPressedRectangles == 1 || numberOfPressedRectangles == 2 )) {
                     person.setRectanglePressed(false);
                     person.getCircle().setVisible(false);
                 } else {
-                    person.setRectanglePressed(true);
+                    if (numberOfPressedRectangles != 2) {
+                        person.setRectanglePressed(true);
+                    }
                 }
             });
 
             person.getCircle().setMouseTransparent(true);
-//            person.getCircle().setOnMousePressed(e -> {
-//                long numberOfPressedRectangles = dataContainer.entrySet().stream()
-//                        .filter(entryset -> entryset.getValue().isRectanglePressed())
-//                        .count();
-//
-//                if (person.getRectangle().isPressed() && numberOfPressedRectangles == 2) {
-//                    person.setRectanglePressed(false);
-//
-//                } else {
-//                    person.setRectanglePressed(true);
-//                }
-//            });
         });
 
         this.circleFollowing.setMouseTransparent(true);
         this.container.getChildren().add(this.circleFollowing);
         this.container.setOnMouseMoved(e -> {
-            if (this.pressingOnRectangle) {
-                if (!circleFollowing.isVisible()) {
-                    circleFollowing.setVisible(true);
-                }
-                circleFollowing.setTranslateX(e.getX());
-                circleFollowing.setTranslateY(e.getY());
-            } else {
-                circleFollowing.setVisible(false);
+            long numberOfPressedRectangles = dataContainer.entrySet().stream()
+                    .filter(entryset -> entryset.getValue().isRectanglePressed())
+                    .count();
+
+            if (numberOfPressedRectangles == 1) {
+                Circle circle = Optional.of(dataContainer.entrySet().stream()
+                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+                        .findFirst().get()).get().getValue().getCircle();
+
+                Line line = new Line();
+                line.setStartX(circle.getCenterX());
+                line.setStartY(circle.getCenterY());
+                line.setEndX(e.getX());
+                line.setEndY(e.getY());
+                this.container.getChildren().add(line);
             }
+//            if (this.pressingOnRectangle) {
+//                if (!circleFollowing.isVisible()) {
+//                    circleFollowing.setVisible(true);
+//                }
+//                circleFollowing.setTranslateX(e.getX());
+//                circleFollowing.setTranslateY(e.getY());
+//            } else {
+//                circleFollowing.setVisible(false);
+//            }
         });
     }
 }
