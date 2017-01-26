@@ -21,14 +21,12 @@ public class Window implements IWindow {
 
     private final Pane container;
     private final QuickFind quickFind = new QuickFind();
-    private Circle circleFollowing = new Circle();
+    private Line initialConnectionLine = new Line();
 
     public Window() {
         this.container = new Pane();
         this.container.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
         this.container.setVisible(false);
-        this.circleFollowing.setFill(Color.DARKGREEN);
-        this.circleFollowing.setRadius(10);
         this.draw();
     }
 
@@ -93,8 +91,8 @@ public class Window implements IWindow {
             person.getCircle().setMouseTransparent(true);
         });
 
-        this.circleFollowing.setMouseTransparent(true);
-        this.container.getChildren().add(this.circleFollowing);
+        this.container.getChildren().add(this.initialConnectionLine);
+        this.initialConnectionLine.setVisible(false);
         this.container.setOnMouseMoved(e -> {
             long numberOfPressedRectangles = dataContainer.entrySet().stream()
                     .filter(entryset -> entryset.getValue().isRectanglePressed())
@@ -105,22 +103,13 @@ public class Window implements IWindow {
                         .filter(entryset -> entryset.getValue().isRectanglePressed())
                         .findFirst().get()).get().getValue().getCircle();
 
-                Line line = new Line();
-                line.setStartX(circle.getCenterX());
-                line.setStartY(circle.getCenterY());
-                line.setEndX(e.getX());
-                line.setEndY(e.getY());
-                this.container.getChildren().add(line);
+                this.initialConnectionLine.setVisible(true);
+                this.initialConnectionLine.setMouseTransparent(true);
+                this.initialConnectionLine.setStartX(circle.getCenterX());
+                this.initialConnectionLine.setStartY(circle.getCenterY());
+                this.initialConnectionLine.setEndX(e.getX());
+                this.initialConnectionLine.setEndY(e.getY());
             }
-//            if (this.pressingOnRectangle) {
-//                if (!circleFollowing.isVisible()) {
-//                    circleFollowing.setVisible(true);
-//                }
-//                circleFollowing.setTranslateX(e.getX());
-//                circleFollowing.setTranslateY(e.getY());
-//            } else {
-//                circleFollowing.setVisible(false);
-//            }
         });
     }
 }
