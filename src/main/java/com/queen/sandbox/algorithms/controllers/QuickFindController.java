@@ -5,17 +5,23 @@ import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class QuickFindController implements Initializable {
 
     @FXML
     private Pane QFwindow;
+
+    @FXML
+    private Line initialConnectionLine;
 
     private MainContainerController mainContainerController;
     private final QuickFind quickFind = new QuickFind();
@@ -83,25 +89,23 @@ public class QuickFindController implements Initializable {
             person.getCircle().setMouseTransparent(true);
         });
 
-//        this.QFwindow.getChildren().add(this.initialConnectionLine);
-//        this.initialConnectionLine.setVisible(false);
-//        this.container.setOnMouseMoved(e -> {
-//            long numberOfPressedRectangles = dataContainer.entrySet().stream()
-//                    .filter(entryset -> entryset.getValue().isRectanglePressed())
-//                    .count();
-//
-//            if (numberOfPressedRectangles == 1) {
-//                Circle circle = Optional.of(dataContainer.entrySet().stream()
-//                        .filter(entryset -> entryset.getValue().isRectanglePressed())
-//                        .findFirst().get()).get().getValue().getCircle();
-//
-//                this.initialConnectionLine.setVisible(true);
-//                this.initialConnectionLine.setMouseTransparent(true);
-//                this.initialConnectionLine.setStartX(circle.getCenterX());
-//                this.initialConnectionLine.setStartY(circle.getCenterY());
-//                this.initialConnectionLine.setEndX(e.getX());
-//                this.initialConnectionLine.setEndY(e.getY());
-//            }
-//        });
+        this.QFwindow.setOnMouseMoved(e -> {
+            long numberOfPressedRectangles = dataContainer.entrySet().stream()
+                    .filter(entryset -> entryset.getValue().isRectanglePressed())
+                    .count();
+
+            if (numberOfPressedRectangles == 1) {
+                Circle circle = Optional.of(dataContainer.entrySet().stream()
+                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+                        .findFirst().get()).get().getValue().getCircle();
+
+                this.initialConnectionLine.setVisible(true);
+                this.initialConnectionLine.setMouseTransparent(true);
+                this.initialConnectionLine.setStartX(circle.getCenterX());
+                this.initialConnectionLine.setStartY(circle.getCenterY());
+                this.initialConnectionLine.setEndX(e.getX());
+                this.initialConnectionLine.setEndY(e.getY());
+            }
+        });
     }
 }

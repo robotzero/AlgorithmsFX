@@ -15,9 +15,10 @@ public class QuickFind {
     public QuickFind() {
         this.dataContainer = IntStream.range(0, 10)
                 .mapToObj(id -> {
+                    int rectangleX = (id + 192) * id;
                     Rectangle rectangle = new Rectangle(100, 100, 100, 100);
                     rectangle.setStroke(Color.BLACK);
-                    rectangle.setX(id * 180);
+                    rectangle.setX(rectangleX);
                     rectangle.setY(200);
                     Circle circle = new Circle(10, 10, 10, Color.RED);
                     circle.setStroke(Color.BLACK);
