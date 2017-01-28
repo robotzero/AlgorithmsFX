@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<Pane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.queen.sandbox.algorithms.controllers.QuickFindController"
+      prefHeight="1920.0" prefWidth="1080.0"
+      style="-fx-background-color: wheat;"
+      fx:id="QFwindow">
+</Pane>

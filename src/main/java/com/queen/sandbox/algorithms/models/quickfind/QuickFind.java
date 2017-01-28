@@ -1,12 +1,10 @@
-package com.queen.algs.QuickFind.Alg;
+package com.queen.sandbox.algorithms.models.quickfind;
 
-import com.queen.algs.QuickUnion.Person;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

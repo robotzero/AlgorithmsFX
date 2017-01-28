@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.queen.sandbox.algorithms.controllers.QuickUnionController"
+            prefHeight="1920.0" prefWidth="1080.0">
+    <Label fx:id="lbl1" alignment="CENTER" layoutX="37.0" layoutY="46.0" prefHeight="17.0" prefWidth="152.0" text="Default Tab1 text" />
+</AnchorPane>

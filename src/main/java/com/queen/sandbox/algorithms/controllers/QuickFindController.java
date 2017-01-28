@@ -1,45 +1,37 @@
-package com.queen.algs.QuickFind.View;
+package com.queen.sandbox.algorithms.controllers;
 
-import com.queen.algs.IWindow;
-import com.queen.algs.QuickFind.Alg.QuickFind;
-import com.queen.algs.QuickUnion.Person;
-import javafx.geometry.Insets;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import com.queen.sandbox.algorithms.models.quickfind.Person;
+import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.util.Map;
-import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class Window implements IWindow {
+public class QuickFindController implements Initializable {
 
-    private final Pane container;
+    @FXML
+    private Pane QFwindow;
+
+    private MainContainerController mainContainerController;
     private final QuickFind quickFind = new QuickFind();
-    private Line initialConnectionLine = new Line();
 
-    public Window() {
-        this.container = new Pane();
-        this.container.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
-        this.container.setVisible(false);
+    public void init(MainContainerController mainContainerController) {
+        this.mainContainerController = mainContainerController;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         this.draw();
     }
 
-    public Pane getPane() {
-        return this.container;
-    }
-
-    public boolean isVisible() {
-        return this.container.isVisible();
-    }
-
-    public void draw() {
+    private void draw() {
         Map<Integer, Person> dataContainer = quickFind.getDatContainer();
+        this.QFwindow.autosize();
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getValue();
             Text name = new Text();
@@ -47,7 +39,7 @@ public class Window implements IWindow {
             name.setY(person.getRectangle().getY() - 25);
             name.setText(person.getName());
             name.setFont(new Font(40));
-            this.container.getChildren().addAll(person.getRectangle(), person.getCircle(), name);
+            this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), name);
 
             person.getRectangle().setOnMouseEntered(e -> {
                 if (!person.getCircle().isVisible()) {
@@ -91,25 +83,25 @@ public class Window implements IWindow {
             person.getCircle().setMouseTransparent(true);
         });
 
-        this.container.getChildren().add(this.initialConnectionLine);
-        this.initialConnectionLine.setVisible(false);
-        this.container.setOnMouseMoved(e -> {
-            long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                    .filter(entryset -> entryset.getValue().isRectanglePressed())
-                    .count();
-
-            if (numberOfPressedRectangles == 1) {
-                Circle circle = Optional.of(dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getValue().isRectanglePressed())
-                        .findFirst().get()).get().getValue().getCircle();
-
-                this.initialConnectionLine.setVisible(true);
-                this.initialConnectionLine.setMouseTransparent(true);
-                this.initialConnectionLine.setStartX(circle.getCenterX());
-                this.initialConnectionLine.setStartY(circle.getCenterY());
-                this.initialConnectionLine.setEndX(e.getX());
-                this.initialConnectionLine.setEndY(e.getY());
-            }
-        });
+//        this.QFwindow.getChildren().add(this.initialConnectionLine);
+//        this.initialConnectionLine.setVisible(false);
+//        this.container.setOnMouseMoved(e -> {
+//            long numberOfPressedRectangles = dataContainer.entrySet().stream()
+//                    .filter(entryset -> entryset.getValue().isRectanglePressed())
+//                    .count();
+//
+//            if (numberOfPressedRectangles == 1) {
+//                Circle circle = Optional.of(dataContainer.entrySet().stream()
+//                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+//                        .findFirst().get()).get().getValue().getCircle();
+//
+//                this.initialConnectionLine.setVisible(true);
+//                this.initialConnectionLine.setMouseTransparent(true);
+//                this.initialConnectionLine.setStartX(circle.getCenterX());
+//                this.initialConnectionLine.setStartY(circle.getCenterY());
+//                this.initialConnectionLine.setEndX(e.getX());
+//                this.initialConnectionLine.setEndY(e.getY());
+//            }
+//        });
     }
 }

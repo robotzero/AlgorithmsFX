@@ -1,4 +1,4 @@
-package com.queen.algs.QuickUnion;
+package com.queen.sandbox.algorithms.models.quickfind;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;

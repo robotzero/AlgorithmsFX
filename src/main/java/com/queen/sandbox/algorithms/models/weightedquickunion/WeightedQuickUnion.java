@@ -1,13 +1,13 @@
-package com.queen.algs.Maze.WeighetQuickUnion;
+package com.queen.sandbox.algorithms.models.weightedquickunion;
 
 import javafx.scene.layout.Pane;
 
-public class Window extends Pane {
+public class WeightedQuickUnion extends Pane {
 
     private int[] container;
     private int[] weight;
 
-    public Window(int[] container) {
+    public WeightedQuickUnion(int[] container) {
         this.container = container;
     }
 

@@ -1,4 +1,4 @@
-package com.queen.algs.Maze.Depth;
+package com.queen.sandbox.algorithms.models.maze.depth;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Group;

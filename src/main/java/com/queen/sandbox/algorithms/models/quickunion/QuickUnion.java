@@ -1,4 +1,4 @@
-package com.queen.algs.QuickUnion.Alg;
+package com.queen.sandbox.algorithms.models.quickunion;
 
 public class QuickUnion {
 

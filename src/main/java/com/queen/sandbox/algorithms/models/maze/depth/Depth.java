@@ -1,4 +1,4 @@
-package com.queen.algs.Maze.Depth;
+package com.queen.sandbox.algorithms.models.maze.depth;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -7,7 +7,6 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Depth extends Pane {
 
