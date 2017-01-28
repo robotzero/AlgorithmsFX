@@ -4,7 +4,7 @@
 <Pane xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.queen.sandbox.algorithms.controllers.QuickFindController"
-      prefHeight="1920.0" prefWidth="1080.0"
+      prefHeight="1080.0" prefWidth="1920.0"
       style="-fx-background-color: wheat;"
       fx:id="QFwindow">
 </Pane>

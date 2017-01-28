@@ -24,6 +24,8 @@ public class AlgorithmsFX extends Application {
             Parent mainContainer = FXMLLoader.load(getClass().getResource("../views/maincontainer.fxml"));
             Scene scene = new Scene(mainContainer);
 //            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            primaryStage.setX(2516);
+            primaryStage.setY(100);
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch(Exception e) {
