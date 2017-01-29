@@ -76,14 +76,26 @@ public class QuickFindController implements Initializable {
                         .filter(entryset -> entryset.getValue().isRectanglePressed())
                         .count();
 
-                if (person.isRectanglePressed() && (numberOfPressedRectangles == 1 || numberOfPressedRectangles == 2 )) {
+                if (person.isRectanglePressed() && numberOfPressedRectangles != 0) {
                     person.setRectanglePressed(false);
                     person.getCircle().setVisible(false);
                 } else {
-                    if (numberOfPressedRectangles != 2) {
+                    if (!person.isRectanglePressed() && numberOfPressedRectangles != 2) {
                         person.setRectanglePressed(true);
                     }
                 }
+
+//                    if (numberOfPressedRectangles != 2) {
+//                        if (numberOfPressedRectangles == 1) {
+//                            Person toConnect = dataContainer.entrySet().stream().filter(entryset -> entryset.getValue().isRectanglePressed()).findFirst().get().getValue();
+//                            if (toConnect.getId() != person.getId() && !this.quickFind.connected(toConnect.getId(), person.getId())) {
+//                                this.quickFind.union(toConnect.getId(), person.getId());
+//                                System.out.println("union" + toConnect.getId() +  " " + person.getId());
+//                            }
+//                        }
+//
+//                    }
+//                }
             });
 
             person.getCircle().setMouseTransparent(true);
@@ -99,12 +111,27 @@ public class QuickFindController implements Initializable {
                         .filter(entryset -> entryset.getValue().isRectanglePressed())
                         .findFirst().get()).get().getValue().getCircle();
 
-                this.initialConnectionLine.setVisible(true);
-                this.initialConnectionLine.setMouseTransparent(true);
-                this.initialConnectionLine.setStartX(circle.getCenterX());
-                this.initialConnectionLine.setStartY(circle.getCenterY());
+                if (!this.initialConnectionLine.isVisible()) {
+                    this.initialConnectionLine.setVisible(true);
+                    this.initialConnectionLine.setStartX(circle.getCenterX());
+                    this.initialConnectionLine.setStartY(circle.getCenterY());
+                }
+
+                if (this.initialConnectionLine.getStartX() != circle.getCenterX()) {
+                    this.initialConnectionLine.setStartX(circle.getCenterX());
+                    this.initialConnectionLine.setStartY(circle.getCenterY());
+                }
+                
                 this.initialConnectionLine.setEndX(e.getX());
                 this.initialConnectionLine.setEndY(e.getY());
+            }
+
+            if (numberOfPressedRectangles == 0 && this.initialConnectionLine.isVisible()) {
+                this.initialConnectionLine.setVisible(false);
+                this.initialConnectionLine.setStartX(0);
+                this.initialConnectionLine.setStartY(0);
+                this.initialConnectionLine.setEndX(0);
+                this.initialConnectionLine.setEndY(0);
             }
         });
     }

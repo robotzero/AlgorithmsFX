@@ -23,7 +23,7 @@ public class AlgorithmsFX extends Application {
             Scene scene = new Scene(mainContainer);
 //            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             primaryStage.setTitle("AlgorithmsFX");
-            primaryStage.setX(2516);
+            primaryStage.setX(2200);
             primaryStage.setY(100);
             primaryStage.setScene(scene);
             primaryStage.show();
