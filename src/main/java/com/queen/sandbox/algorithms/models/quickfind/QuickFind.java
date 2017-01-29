@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 public class QuickFind {
 //    private int[] container;
-    private final Map<Integer, Person> dataContainer;
+    private final Map<Person, Integer> dataContainer;
 
     public QuickFind() {
         this.dataContainer = IntStream.range(0, 10)
@@ -32,37 +32,38 @@ public class QuickFind {
                             new Color(0.5, 0.5, 0.5, 0),
                             circle);
                 })
-                .collect(Collectors.toMap(Person::getId, entry -> entry));
+                .collect(Collectors.toMap(entry -> entry, Person::getId));
 //        this.container = new int[10];
 //        for (int i = 0; i < 10; i++) {
 //            this.container[i] = i;
 //        }
     }
 
-    public boolean connected(int p, int q) {
-        return dataContainer.get(p) == dataContainer.get(q);
+    public boolean connected(Person p1, Person p2) {
+        return dataContainer.get(p1).intValue() == dataContainer.get(p2).intValue();
 //        return container[p] == container[q];
     }
 
-    public void union(int p, int q) {
+    public void union(Person p1, Person p2) {
+
+        int pid = dataContainer.get(p1);
+        int qid = dataContainer.get(p2);
+
 //        int pid = container[p];
 //        int qid = container[q];
-        int pid = dataContainer.get(p).getId();
-        int qid = dataContainer.get(q).getId();
 
-
-        for(int i = 0; i < dataContainer.size(); i++) {
-            if (dataContainer.get(i).getId() == pid) {
-                Person person = dataContainer.get(qid);
-                dataContainer.put(i, person);
+        this.dataContainer.forEach((person, id) -> {
+            if (id == pid) {
+                this.dataContainer.replace(person, qid);
             }
+        });
 //            if (container[i] == pid) {
 //                container[i] = qid;
 //            }
-        }
+//        }
     }
 
-    public Map<Integer, Person> getDatContainer() {
+    public Map<Person, Integer> getDatContainer() {
         return this.dataContainer;
     }
 }

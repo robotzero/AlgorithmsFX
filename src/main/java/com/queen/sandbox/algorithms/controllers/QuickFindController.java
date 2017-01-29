@@ -36,10 +36,10 @@ public class QuickFindController implements Initializable {
     }
 
     private void draw() {
-        Map<Integer, Person> dataContainer = quickFind.getDatContainer();
+        Map<Person, Integer> dataContainer = quickFind.getDatContainer();
         this.QFwindow.autosize();
         dataContainer.entrySet().forEach(entry -> {
-            Person person = entry.getValue();
+            Person person = entry.getKey();
             Text name = new Text();
             name.setX(person.getRectangle().getX());
             name.setY(person.getRectangle().getY() - 25);
@@ -73,7 +73,7 @@ public class QuickFindController implements Initializable {
 
             person.getRectangle().setOnMousePressed(e -> {
                 long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getValue().isRectanglePressed())
+                        .filter(entryset -> entryset.getKey().isRectanglePressed())
                         .count();
 
                 if (person.isRectanglePressed() && numberOfPressedRectangles != 0) {
@@ -82,20 +82,18 @@ public class QuickFindController implements Initializable {
                 } else {
                     if (!person.isRectanglePressed() && numberOfPressedRectangles != 2) {
                         person.setRectanglePressed(true);
+                        if (numberOfPressedRectangles == 1) {
+                            Person toConnect = dataContainer.entrySet().stream().filter(entryset -> entryset.getKey().isRectanglePressed())
+                                                                                .filter(entryset -> entryset.getKey() != person)
+                                                                                .findFirst().get().getKey();
+                            if (!this.quickFind.connected(person, toConnect)) {
+                                System.out.println(this.quickFind.getDatContainer());
+                                this.quickFind.union(person, toConnect);
+                                System.out.println(this.quickFind.getDatContainer());
+                            }
+                        }
                     }
                 }
-
-//                    if (numberOfPressedRectangles != 2) {
-//                        if (numberOfPressedRectangles == 1) {
-//                            Person toConnect = dataContainer.entrySet().stream().filter(entryset -> entryset.getValue().isRectanglePressed()).findFirst().get().getValue();
-//                            if (toConnect.getId() != person.getId() && !this.quickFind.connected(toConnect.getId(), person.getId())) {
-//                                this.quickFind.union(toConnect.getId(), person.getId());
-//                                System.out.println("union" + toConnect.getId() +  " " + person.getId());
-//                            }
-//                        }
-//
-//                    }
-//                }
             });
 
             person.getCircle().setMouseTransparent(true);
@@ -103,13 +101,13 @@ public class QuickFindController implements Initializable {
 
         this.QFwindow.setOnMouseMoved(e -> {
             long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                    .filter(entryset -> entryset.getValue().isRectanglePressed())
+                    .filter(entryset -> entryset.getKey().isRectanglePressed())
                     .count();
 
             if (numberOfPressedRectangles == 1) {
                 Circle circle = Optional.of(dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getValue().isRectanglePressed())
-                        .findFirst().get()).get().getValue().getCircle();
+                        .filter(entryset -> entryset.getKey().isRectanglePressed())
+                        .findFirst().get()).get().getKey().getCircle();
 
                 if (!this.initialConnectionLine.isVisible()) {
                     this.initialConnectionLine.setVisible(true);
@@ -121,7 +119,7 @@ public class QuickFindController implements Initializable {
                     this.initialConnectionLine.setStartX(circle.getCenterX());
                     this.initialConnectionLine.setStartY(circle.getCenterY());
                 }
-                
+
                 this.initialConnectionLine.setEndX(e.getX());
                 this.initialConnectionLine.setEndY(e.getY());
             }
