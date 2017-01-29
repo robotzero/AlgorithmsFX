@@ -3,6 +3,8 @@ package com.queen.sandbox.algorithms.models.quickfind;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,19 +20,29 @@ public class QuickFind {
                     int rectangleX = (id + 192) * id;
                     Rectangle rectangle = new Rectangle(100, 100, 100, 100);
                     rectangle.setStroke(Color.BLACK);
-                    rectangle.setX(rectangleX);
-                    rectangle.setY(200);
+                    rectangle.setX(0);
+                    rectangle.setY(0);
                     Circle circle = new Circle(10, 10, 10, Color.RED);
                     circle.setStroke(Color.BLACK);
                     circle.setVisible(false);
-                    circle.setCenterX(rectangle.getX() + rectangle.getWidth() / 2);
-                    circle.setCenterY(rectangle.getY() + rectangle.getHeight() / 2);
+                    rectangle.setTranslateX(rectangleX);
+                    rectangle.setTranslateY(200);
+                    circle.centerXProperty().bind(rectangle.translateXProperty().add(rectangle.widthProperty()).subtract(rectangle.widthProperty().divide(2)));
+                    circle.centerYProperty().bind(rectangle.translateYProperty().add(rectangle.heightProperty()).subtract(rectangle.heightProperty().divide(2)));
+                    Text name = new Text();
+                    name.setX(0);
+                    name.setY(0);
+                    name.translateXProperty().bind(rectangle.translateXProperty().add(20));
+                    name.translateYProperty().bind(rectangle.translateYProperty().subtract(20));
+                    name.setText(Integer.toString(id));
+                    name.setFont(new Font(40));
                     return new Person(
                             id,
                             Integer.toString(id),
                             rectangle,
                             new Color(0.5, 0.5, 0.5, 0),
-                            circle);
+                            circle,
+                            name);
                 })
                 .collect(Collectors.toMap(entry -> entry, Person::getId));
 //        this.container = new int[10];

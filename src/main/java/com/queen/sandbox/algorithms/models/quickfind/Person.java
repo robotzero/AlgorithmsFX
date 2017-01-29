@@ -3,6 +3,7 @@ package com.queen.sandbox.algorithms.models.quickfind;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,15 @@ public class Person {
     private Circle circle;
     private List<Integer> friends = new ArrayList<>();
     private boolean rectanglePressed;
+    private Text nameText;
 
-    public Person(int id, String name, Rectangle picture, Color color, Circle circle) {
+    public Person(int id, String name, Rectangle picture, Color color, Circle circle, Text nameText) {
         this.id = id;
         this.name = name;
         this.picture = picture;
         this.color = color;
         this.circle = circle;
+        this.nameText = nameText;
     }
 
     public void addFriend(Integer id) {
@@ -47,6 +50,10 @@ public class Person {
 
     public Circle getCircle() {
         return this.circle;
+    }
+
+    public Text getNameText() {
+        return this.nameText;
     }
 
     public boolean isRectanglePressed() {

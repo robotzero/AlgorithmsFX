@@ -2,13 +2,14 @@ package com.queen.sandbox.algorithms.controllers;
 
 import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class QuickFindController implements Initializable {
 
     private MainContainerController mainContainerController;
     private final QuickFind quickFind = new QuickFind();
+    private final TranslateTransition translateTransition = new TranslateTransition();
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -40,12 +42,7 @@ public class QuickFindController implements Initializable {
         this.QFwindow.autosize();
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getKey();
-            Text name = new Text();
-            name.setX(person.getRectangle().getX());
-            name.setY(person.getRectangle().getY() - 25);
-            name.setText(person.getName());
-            name.setFont(new Font(40));
-            this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), name);
+            this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
 
             person.getRectangle().setOnMouseEntered(e -> {
                 if (!person.getCircle().isVisible()) {
@@ -87,9 +84,23 @@ public class QuickFindController implements Initializable {
                                                                                 .filter(entryset -> entryset.getKey() != person)
                                                                                 .findFirst().get().getKey();
                             if (!this.quickFind.connected(person, toConnect)) {
-                                System.out.println(this.quickFind.getDatContainer());
                                 this.quickFind.union(person, toConnect);
-                                System.out.println(this.quickFind.getDatContainer());
+                                Rectangle rootRectangle = toConnect.getRectangle();
+                                Rectangle toAnimate = person.getRectangle();
+                                translateTransition.setFromX(toAnimate.getTranslateX());
+                                translateTransition.setFromY(toAnimate.getTranslateY());
+                                translateTransition.setToX(rootRectangle.getTranslateX() + 120);
+                                translateTransition.setToY(rootRectangle.getTranslateY() + 200);
+                                translateTransition.setDuration(Duration.millis(500));
+                                translateTransition.setNode(toAnimate);
+                                translateTransition.play();
+                                this.initialConnectionLine.setVisible(false);
+                                Line connectionLine = new Line();
+                                connectionLine.setStartX(toConnect.getCircle().getCenterX());
+                                connectionLine.setStartY(toConnect.getCircle().getCenterY());
+                                connectionLine.setEndX(person.getCircle().getCenterX());
+                                connectionLine.setEndY(person.getCircle().getCenterY());
+                                this.QFwindow.getChildren().addAll(connectionLine);
                             }
                         }
                     }
