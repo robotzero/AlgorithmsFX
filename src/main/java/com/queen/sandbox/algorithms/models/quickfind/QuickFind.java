@@ -1,5 +1,6 @@
 package com.queen.sandbox.algorithms.models.quickfind;
 
+import com.github.javafaker.Faker;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -13,6 +14,7 @@ import java.util.stream.IntStream;
 public class QuickFind {
 //    private int[] container;
     private final Map<Person, Integer> dataContainer;
+    private final Faker faker = new Faker();
 
     public QuickFind() {
         this.dataContainer = IntStream.range(0, 10)
@@ -32,13 +34,14 @@ public class QuickFind {
                     Text name = new Text();
                     name.setX(0);
                     name.setY(0);
-                    name.translateXProperty().bind(rectangle.translateXProperty().add(20));
+                    name.translateXProperty().bind(rectangle.translateXProperty().add(0));
                     name.translateYProperty().bind(rectangle.translateYProperty().subtract(20));
-                    name.setText(Integer.toString(id));
-                    name.setFont(new Font(40));
+                    String nameString = faker.name().firstName();
+                    name.setText(nameString);
+                    name.setFont(new Font(15));
                     return new Person(
                             id,
-                            Integer.toString(id),
+                            nameString,
                             rectangle,
                             new Color(0.5, 0.5, 0.5, 0),
                             circle,

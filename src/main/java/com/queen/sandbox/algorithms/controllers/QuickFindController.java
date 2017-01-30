@@ -93,8 +93,7 @@ public class QuickFindController implements Initializable {
                                 Rectangle rootRectangle = toConnect.getRectangle();
                                 Rectangle toAnimate = person.getRectangle();
                                 this.animationPlayer.play(
-                                        rootRectangle.getTranslateX(),
-                                        rootRectangle.getTranslateY(),
+                                        rootRectangle,
                                         toAnimate
                                 );
                                 this.initialConnectionLine.setVisible(false);
@@ -105,6 +104,10 @@ public class QuickFindController implements Initializable {
                                         toConnect.getCircle().centerYProperty(),
                                         this.QFwindow
                                 );
+
+                                this.quickFind.getDatContainer().forEach((p, id) -> {
+                                    p.setRectanglePressed(false);
+                                });
                             }
                         }
                     }

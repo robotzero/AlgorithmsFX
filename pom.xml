@@ -27,6 +27,11 @@
             <version>1.81</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.12</version>
+        </dependency>
     </dependencies>
     <build>
         <defaultGoal>clean package</defaultGoal>
