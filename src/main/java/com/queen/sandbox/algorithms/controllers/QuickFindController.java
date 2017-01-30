@@ -2,10 +2,13 @@ package com.queen.sandbox.algorithms.controllers;
 
 import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
+import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
+import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -26,7 +29,9 @@ public class QuickFindController implements Initializable {
 
     private MainContainerController mainContainerController;
     private final QuickFind quickFind = new QuickFind();
+    private final LineFactory lineFactory = new LineFactory();
     private final TranslateTransition translateTransition = new TranslateTransition();
+    private final AnimationPlayer animationPlayer = new AnimationPlayer();
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -39,7 +44,7 @@ public class QuickFindController implements Initializable {
 
     private void draw() {
         Map<Person, Integer> dataContainer = quickFind.getDatContainer();
-        this.QFwindow.autosize();
+
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getKey();
             this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
@@ -87,20 +92,19 @@ public class QuickFindController implements Initializable {
                                 this.quickFind.union(person, toConnect);
                                 Rectangle rootRectangle = toConnect.getRectangle();
                                 Rectangle toAnimate = person.getRectangle();
-                                translateTransition.setFromX(toAnimate.getTranslateX());
-                                translateTransition.setFromY(toAnimate.getTranslateY());
-                                translateTransition.setToX(rootRectangle.getTranslateX() + 120);
-                                translateTransition.setToY(rootRectangle.getTranslateY() + 200);
-                                translateTransition.setDuration(Duration.millis(500));
-                                translateTransition.setNode(toAnimate);
-                                translateTransition.play();
+                                this.animationPlayer.play(
+                                        rootRectangle.getTranslateX(),
+                                        rootRectangle.getTranslateY(),
+                                        toAnimate
+                                );
                                 this.initialConnectionLine.setVisible(false);
-                                Line connectionLine = new Line();
-                                connectionLine.setStartX(toConnect.getCircle().getCenterX());
-                                connectionLine.setStartY(toConnect.getCircle().getCenterY());
-                                connectionLine.setEndX(person.getCircle().getCenterX());
-                                connectionLine.setEndY(person.getCircle().getCenterY());
-                                this.QFwindow.getChildren().addAll(connectionLine);
+                                this.lineFactory.addNewConnectionLine(
+                                        person.getCircle().centerXProperty(),
+                                        person.getCircle().centerYProperty(),
+                                        toConnect.getCircle().centerXProperty(),
+                                        toConnect.getCircle().centerYProperty(),
+                                        this.QFwindow
+                                );
                             }
                         }
                     }
