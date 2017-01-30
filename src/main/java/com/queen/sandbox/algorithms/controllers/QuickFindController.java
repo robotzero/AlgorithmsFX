@@ -4,15 +4,13 @@ import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.Map;
@@ -27,10 +25,12 @@ public class QuickFindController implements Initializable {
     @FXML
     private Line initialConnectionLine;
 
+    @FXML
+    private Text friendsList;
+
     private MainContainerController mainContainerController;
     private final QuickFind quickFind = new QuickFind();
     private final LineFactory lineFactory = new LineFactory();
-    private final TranslateTransition translateTransition = new TranslateTransition();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
 
     public void init(MainContainerController mainContainerController) {
@@ -44,7 +44,9 @@ public class QuickFindController implements Initializable {
 
     private void draw() {
         Map<Person, Integer> dataContainer = quickFind.getDatContainer();
-
+        this.friendsList.setText("BALH");
+        this.friendsList.setTranslateX(20);
+        this.friendsList.setTranslateY(30);
         dataContainer.entrySet().forEach(entry -> {
             Person person = entry.getKey();
             this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
@@ -52,6 +54,10 @@ public class QuickFindController implements Initializable {
             person.getRectangle().setOnMouseEntered(e -> {
                 if (!person.getCircle().isVisible()) {
                     person.getCircle().setVisible(true);
+                }
+
+                if (!this.friendsList.isVisible()) {
+                    this.friendsList.setVisible(true);
                 }
             });
 
@@ -71,6 +77,8 @@ public class QuickFindController implements Initializable {
                         person.getCircle().setVisible(false);
                     }
                 }
+
+                this.friendsList.setVisible(false);
             });
 
             person.getRectangle().setOnMousePressed(e -> {

@@ -9,7 +9,7 @@ public class LineFactory {
 
     public void addNewConnectionLine(DoubleProperty startX, DoubleProperty startY, DoubleProperty endX, DoubleProperty endY, Node parentNode) {
         Line connectionLine = new Line();
-        connectionLine.setStroke(Color.BLANCHEDALMOND);
+        connectionLine.setStroke(Color.RED);
         connectionLine.startXProperty().bind(startX);
         connectionLine.startYProperty().bind(startY);
         connectionLine.endXProperty().bind(endX);
