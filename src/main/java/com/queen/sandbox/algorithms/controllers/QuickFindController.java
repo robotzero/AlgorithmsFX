@@ -92,38 +92,42 @@ public class QuickFindController implements Initializable {
                 } else {
                     if (!person.isRectanglePressed() && numberOfPressedRectangles != 2) {
                         person.setRectanglePressed(true);
-                        if (numberOfPressedRectangles == 1) {
-                            Person toConnect = dataContainer.entrySet().stream().filter(entryset -> entryset.getKey().isRectanglePressed())
-                                                                                .filter(entryset -> entryset.getKey() != person)
-                                                                                .findFirst().get().getKey();
-                            if (!this.quickFind.connected(person, toConnect)) {
-                                this.quickFind.union(person, toConnect);
-                                Rectangle rootRectangle = toConnect.getRectangle();
-                                Rectangle toAnimate = person.getRectangle();
-                                this.animationPlayer.play(
-                                        rootRectangle,
-                                        toAnimate
-                                );
-                                this.initialConnectionLine.setVisible(false);
-                                this.lineFactory.addNewConnectionLine(
-                                        person.getCircle().centerXProperty(),
-                                        person.getCircle().centerYProperty(),
-                                        toConnect.getCircle().centerXProperty(),
-                                        toConnect.getCircle().centerYProperty(),
-                                        this.QFwindow
-                                );
-
-                                this.quickFind.getDatContainer().forEach((p, id) -> {
-                                    p.setRectanglePressed(false);
+                        dataContainer.entrySet().stream().filter(entryset -> entryset.getKey().isRectanglePressed())
+                                .filter(entryset -> entryset.getKey() != person)
+                                .findFirst().ifPresent(toConnect -> {
+                                    if (numberOfPressedRectangles == 1 && !this.quickFind.connected(person, toConnect.getKey())) {
+                                        this.quickFind.union(person, toConnect.getKey());
+                                        Rectangle rootRectangle = toConnect.getKey().getRectangle();
+                                        Rectangle toAnimate = person.getRectangle();
+                                        this.animationPlayer.play(
+                                            rootRectangle,
+                                            toAnimate
+                                        );
+                                        this.initialConnectionLine.setVisible(false);
+                                        this.lineFactory.addNewConnectionLine(
+                                            person.getCircle().centerXProperty(),
+                                            person.getCircle().centerYProperty(),
+                                            toConnect.getKey().getCircle().centerXProperty(),
+                                            toConnect.getKey().getCircle().centerYProperty(),
+                                            this.QFwindow
+                                        );
+                                        this.quickFind.getDatContainer().forEach((p, id) -> {
+                                            p.setRectanglePressed(false);
+                                        });
+                                    } else {
+                                        if (numberOfPressedRectangles == 1) {
+                                            this.initialConnectionLine.setVisible(false);
+                                        }
+                                    }
                                 });
                             }
                         }
-                    }
-                }
-            });
+                    });
 
-            person.getCircle().setMouseTransparent(true);
-        });
+
+
+                    person.getCircle().setMouseTransparent(true);
+                });
 
         this.QFwindow.setOnMouseMoved(e -> {
             long numberOfPressedRectangles = dataContainer.entrySet().stream()
