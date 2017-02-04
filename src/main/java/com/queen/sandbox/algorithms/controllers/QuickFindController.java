@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class QuickFindController implements Initializable {
 
@@ -123,9 +124,6 @@ public class QuickFindController implements Initializable {
                             }
                         }
                     });
-
-
-
                     person.getCircle().setMouseTransparent(true);
                 });
 
@@ -140,27 +138,39 @@ public class QuickFindController implements Initializable {
                         .findFirst().get()).get().getKey().getCircle();
 
                 if (!this.initialConnectionLine.isVisible()) {
-                    this.initialConnectionLine.setVisible(true);
-                    this.initialConnectionLine.setStartX(circle.getCenterX());
-                    this.initialConnectionLine.setStartY(circle.getCenterY());
+                    this.setInitialConnectionLinePref(line -> {
+                        line.setVisible(true);
+                        line.setStartX(circle.getCenterX());
+                        line.setStartY(circle.getCenterY());
+                    });
                 }
 
                 if (this.initialConnectionLine.getStartX() != circle.getCenterX()) {
-                    this.initialConnectionLine.setStartX(circle.getCenterX());
-                    this.initialConnectionLine.setStartY(circle.getCenterY());
+                    this.setInitialConnectionLinePref(line -> {
+                        line.setStartX(circle.getCenterX());
+                        line.setStartY(circle.getCenterY());
+                    });
                 }
 
-                this.initialConnectionLine.setEndX(e.getX());
-                this.initialConnectionLine.setEndY(e.getY());
+                setInitialConnectionLinePref(line -> {
+                    line.setEndX(e.getX());
+                    line.setEndY(e.getY());
+                });
             }
 
             if (numberOfPressedRectangles == 0 && this.initialConnectionLine.isVisible()) {
-                this.initialConnectionLine.setVisible(false);
-                this.initialConnectionLine.setStartX(0);
-                this.initialConnectionLine.setStartY(0);
-                this.initialConnectionLine.setEndX(0);
-                this.initialConnectionLine.setEndY(0);
+                setInitialConnectionLinePref(line -> {
+                    line.setVisible(false);
+                    line.setStartX(0);
+                    line.setStartY(0);
+                    line.setEndX(0);
+                    line.setEndY(0);
+                });
             }
         });
+    }
+
+    private void setInitialConnectionLinePref(Consumer<Line> newSetup) {
+            newSetup.accept(this.initialConnectionLine);
     }
 }
