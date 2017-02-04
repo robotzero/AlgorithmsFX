@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class QuickFindController implements Initializable {
 
@@ -83,10 +85,7 @@ public class QuickFindController implements Initializable {
             });
 
             person.getRectangle().setOnMousePressed(e -> {
-                long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getKey().isRectanglePressed())
-                        .count();
-
+                long numberOfPressedRectangles = currentListOfPressedRectangles(dataContainer.entrySet().stream()).get();
                 if (person.isRectanglePressed() && numberOfPressedRectangles != 0) {
                     person.setRectanglePressed(false);
                     person.getCircle().setVisible(false);
@@ -128,10 +127,7 @@ public class QuickFindController implements Initializable {
                 });
 
         this.QFwindow.setOnMouseMoved(e -> {
-            long numberOfPressedRectangles = dataContainer.entrySet().stream()
-                    .filter(entryset -> entryset.getKey().isRectanglePressed())
-                    .count();
-
+            long numberOfPressedRectangles = currentListOfPressedRectangles(dataContainer.entrySet().stream()).get();
             if (numberOfPressedRectangles == 1) {
                 Circle circle = Optional.of(dataContainer.entrySet().stream()
                         .filter(entryset -> entryset.getKey().isRectanglePressed())
@@ -172,5 +168,9 @@ public class QuickFindController implements Initializable {
 
     private void setInitialConnectionLinePref(Consumer<Line> newSetup) {
             newSetup.accept(this.initialConnectionLine);
+    }
+
+    private Supplier<Long> currentListOfPressedRectangles(Stream<Map.Entry<Person, Integer>> currentStream) {
+        return () -> currentStream.filter(entry -> entry.getKey().isRectanglePressed()).count();
     }
 }
