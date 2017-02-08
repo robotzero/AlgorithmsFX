@@ -87,18 +87,18 @@ public class QuickFindController implements Initializable {
 
             person.getRectangle().setOnMousePressed(e -> {
                 int numberOfPressedRectangles = this.pressedRectangles.size();
-                if (this.pressedRectangles.contains(person.getId()) && numberOfPressedRectangles != 0) {
+                if (this.pressedRectangles.contains(person.getId())) {
                     this.pressedRectangles.remove(new Integer(person.getId()));
                     person.getCircle().setVisible(false);
                 } else {
-                    if (numberOfPressedRectangles != 2) {
+                    if (numberOfPressedRectangles == 0 || numberOfPressedRectangles % 2 != 0) {
                         this.pressedRectangles.add(person.getId());
                         this.pressedRectangles.stream()
                                 .filter(personId -> person.getId() != personId)
                                 .findFirst()
                                 .ifPresent(personId -> {
                                     dataContainer.entrySet().stream().filter(entryset -> entryset.getValue().intValue() == personId).findFirst().ifPresent(toConnect -> {
-                                        if (numberOfPressedRectangles == 1 && !this.quickFind.connected(person, toConnect.getKey())) {
+                                        if (!this.quickFind.connected(person, toConnect.getKey())) {
                                             this.quickFind.union(person, toConnect.getKey());
                                             Rectangle rootRectangle = toConnect.getKey().getRectangle();
                                             Rectangle toAnimate = person.getRectangle();
