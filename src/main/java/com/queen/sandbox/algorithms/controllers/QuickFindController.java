@@ -91,6 +91,8 @@ public class QuickFindController implements Initializable {
                     this.pressedRectangles.remove(new Integer(person.getId()));
                     person.getCircle().setVisible(false);
                 } else {
+                    System.out.println("BLAH");
+                    System.out.println(numberOfPressedRectangles);
                     if (numberOfPressedRectangles == 0 || numberOfPressedRectangles % 2 != 0) {
                         this.pressedRectangles.add(person.getId());
                         this.pressedRectangles.stream()
@@ -106,7 +108,6 @@ public class QuickFindController implements Initializable {
                                                     rootRectangle,
                                                     toAnimate
                                             );
-                                            this.initialConnectionLine.setVisible(false);
                                             this.lineFactory.addNewConnectionLine(
                                                     person.getCircle().centerXProperty(),
                                                     person.getCircle().centerYProperty(),
@@ -115,12 +116,12 @@ public class QuickFindController implements Initializable {
                                                     this.QFwindow
                                             );
 //                                            this.pressedRectangles.clear();
-                                            this.initialConnectionLine.setVisible(false);
                                         }
                                     });
                                 });
                             }
                         }
+                        this.initialConnectionLine.setVisible(false);
                     });
                     person.getCircle().setMouseTransparent(true);
                 });
