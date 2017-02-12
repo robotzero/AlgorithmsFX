@@ -77,10 +77,16 @@ public class QuickFindController implements Initializable {
                 double distance = Math.pow(centerX - rectangleX, 2) + Math.pow(centerY - rectangleY, 2);
 
                 if (!(distance < Math.pow(radius, 2))) {
-                    if (this.pressedRectangles.contains(person.getId())) {
+                    if (this.pressedRectangles.contains(person.getId()) && !isNodeVisible.test(person.getCircle())) {
                         person.getCircle().setVisible(true);
                     } else {
-                        person.getCircle().setVisible(false);
+                        boolean isPersonConnectedToAnyone = dataContainer.entrySet().stream()
+                                .map(Map.Entry::getKey)
+                                .filter(mapentry -> mapentry.getId() != person.getId())
+                                .anyMatch(mapentry -> quickFind.connected(person, mapentry));
+                        if (!isPersonConnectedToAnyone && this.pressedRectangles.size() != 1) {
+                            person.getCircle().setVisible(false);
+                        }
                     }
                 }
 
@@ -93,8 +99,6 @@ public class QuickFindController implements Initializable {
                     this.pressedRectangles.remove(new Integer(person.getId()));
                     person.getCircle().setVisible(false);
                 } else {
-                    System.out.println("BLAH");
-                    System.out.println(numberOfPressedRectangles);
                     if (numberOfPressedRectangles == 0 || numberOfPressedRectangles % 2 != 0) {
                         this.pressedRectangles.add(person.getId());
                         this.pressedRectangles.stream()
@@ -142,7 +146,6 @@ public class QuickFindController implements Initializable {
                             Circle circle = entry.getKey().getCircle();
                             if (!this.initialConnectionLine.isVisible()) {
                                 this.setInitialConnectionLinePref(line -> {
-                                    System.out.println("TRUE");
                                     line.setVisible(true);
                                     line.setStartX(circle.getCenterX());
                                     line.setStartY(circle.getCenterY());
