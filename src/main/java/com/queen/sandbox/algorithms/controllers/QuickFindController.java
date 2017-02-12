@@ -7,10 +7,12 @@ import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -29,12 +31,16 @@ public class QuickFindController implements Initializable {
     @FXML
     private Text friendsList;
 
+    @FXML
+    private Button reset;
+
     private MainContainerController mainContainerController;
     private final QuickFind quickFind = new QuickFind();
     private final LineFactory lineFactory = new LineFactory();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
     private List<Integer> pressedRectangles = new ArrayList<>();
     private Predicate<Node> isNodeVisible = Node::isVisible;
+    private Font font = new Font(30);
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -47,8 +53,11 @@ public class QuickFindController implements Initializable {
     }
 
     private void draw() {
+        this.reset.setTranslateX(1820 - this.reset.getWidth());
+        this.reset.setTranslateY(10);
         Map<Person, Integer> dataContainer = quickFind.getDatContainer();
-        this.friendsList.setText("BALH");
+        this.friendsList.setText("Current connections: none");
+        this.friendsList.setFont(this.font);
         this.friendsList.setTranslateX(20);
         this.friendsList.setTranslateY(30);
         dataContainer.entrySet().forEach(entry -> {
@@ -56,6 +65,21 @@ public class QuickFindController implements Initializable {
             this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
 
             person.getRectangle().setOnMouseEntered(e -> {
+                String friends = dataContainer.entrySet().stream()
+                        .map(Map.Entry::getKey)
+                        .filter(mapEntry -> mapEntry.getId() != person.getId())
+                        .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
+                        .map(Person::getName)
+                        .collect(() ->
+                            new StringBuilder(),
+                            (StringBuilder sb1, String s1) -> sb1.append(s1),
+                            (StringBuilder sb1, StringBuilder sb2) -> sb1.append(sb2)).toString();
+                if (!friends.isEmpty()) {
+                    this.friendsList.setText("Current connections: " + " " + friends);
+                } else {
+                    this.friendsList.setText("Current connections: none");
+                }
+
                 if(!isNodeVisible.test(person.getCircle())) {
                     person.getCircle().setVisible(true);
                 }
