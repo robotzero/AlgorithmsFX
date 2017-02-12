@@ -105,7 +105,7 @@ public class QuickFindController implements Initializable {
                                 .filter(personId -> person.getId() != personId)
                                 .findFirst()
                                 .ifPresent(personId -> {
-                                    dataContainer.entrySet().stream().filter(entryset -> entryset.getValue().intValue() == personId).findFirst().ifPresent(toConnect -> {
+                                    dataContainer.entrySet().stream().filter(entryset -> entryset.getKey().getId() == personId).findFirst().ifPresent(toConnect -> {
                                         if (!this.quickFind.connected(person, toConnect.getKey())) {
                                             this.quickFind.union(person, toConnect.getKey());
                                             Rectangle rootRectangle = toConnect.getKey().getRectangle();
