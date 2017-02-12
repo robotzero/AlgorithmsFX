@@ -6,6 +6,7 @@ import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -15,6 +16,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class QuickFindController implements Initializable {
 
@@ -32,6 +34,7 @@ public class QuickFindController implements Initializable {
     private final LineFactory lineFactory = new LineFactory();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
     private List<Integer> pressedRectangles = new ArrayList<>();
+    private Predicate<Node> isNodeVisible = Node::isVisible;
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -53,11 +56,11 @@ public class QuickFindController implements Initializable {
             this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
 
             person.getRectangle().setOnMouseEntered(e -> {
-                if (!person.getCircle().isVisible()) {
+                if(!isNodeVisible.test(person.getCircle())) {
                     person.getCircle().setVisible(true);
                 }
 
-                if (!this.friendsList.isVisible()) {
+                if (!isNodeVisible.test(this.friendsList)) {
                     this.friendsList.setVisible(true);
                 }
             });
@@ -76,8 +79,7 @@ public class QuickFindController implements Initializable {
                 if (!(distance < Math.pow(radius, 2))) {
                     if (this.pressedRectangles.contains(person.getId())) {
                         person.getCircle().setVisible(true);
-                    }
-                    if (!this.pressedRectangles.contains(person.getId())) {
+                    } else {
                         person.getCircle().setVisible(false);
                     }
                 }
@@ -115,21 +117,22 @@ public class QuickFindController implements Initializable {
                                                     toConnect.getKey().getCircle().centerYProperty(),
                                                     this.QFwindow
                                             );
-//                                            this.pressedRectangles.clear();
+                                            this.pressedRectangles.clear();
                                         }
                                     });
                                 });
                             }
                         }
-                        this.initialConnectionLine.setVisible(false);
+                        if (isNodeVisible.test(initialConnectionLine)) {
+                            this.initialConnectionLine.setVisible(false);
+                        }
                     });
                     person.getCircle().setMouseTransparent(true);
                 });
 
         this.QFwindow.setOnMouseMoved(e -> {
             int numberOfPressedRectangles = this.pressedRectangles.size();
-            if (numberOfPressedRectangles != 0 | numberOfPressedRectangles % 2 != 0) {
-                //@ TODO fix, we do not clear the array now.
+            if (numberOfPressedRectangles != 0 || numberOfPressedRectangles % 2 != 0) {
                 //@ TODO change array to observable list.
                 int pressedRectangleId = this.pressedRectangles.get(0);
                 dataContainer.entrySet().stream()
@@ -139,6 +142,7 @@ public class QuickFindController implements Initializable {
                             Circle circle = entry.getKey().getCircle();
                             if (!this.initialConnectionLine.isVisible()) {
                                 this.setInitialConnectionLinePref(line -> {
+                                    System.out.println("TRUE");
                                     line.setVisible(true);
                                     line.setStartX(circle.getCenterX());
                                     line.setStartY(circle.getCenterY());
@@ -158,7 +162,7 @@ public class QuickFindController implements Initializable {
                         });
             }
 
-            if (numberOfPressedRectangles == 0 && this.initialConnectionLine.isVisible()) {
+            if (numberOfPressedRectangles == 0 && isNodeVisible.test(this.initialConnectionLine)) {
                 setInitialConnectionLinePref(line -> {
                     line.setVisible(false);
                     line.setStartX(0);

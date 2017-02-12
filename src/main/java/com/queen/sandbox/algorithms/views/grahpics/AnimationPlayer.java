@@ -6,7 +6,7 @@ import javafx.util.Duration;
 
 public class AnimationPlayer {
 
-    TranslateTransition translateTransition = new TranslateTransition();
+    private TranslateTransition translateTransition = new TranslateTransition();
 
     public void play(Node fromNode, Node toAnimate) {
         translateTransition.setFromX(toAnimate.getTranslateX());
