@@ -9,9 +9,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class QuickFindInMemoryRepository implements Repository {
 
@@ -49,11 +52,22 @@ public class QuickFindInMemoryRepository implements Repository {
             .collect(Collectors.toMap(entry -> entry, Person::getId));
 
 
-    public Supplier getDataContainerStream() {
+    public Supplier<Stream<Map.Entry<Person, Integer>>> getDataContainerStream() {
         return () -> this.dataContainer.entrySet().stream();
     }
 
+    @Override
     public Map<Person, Integer> getDataContainer() {
         return dataContainer;
+    }
+
+    @Override
+    public Supplier<Stream<Person>> searchPerson(Function<Map.Entry<Person, Integer>, Person> translate, Predicate<Person> searchFilter) {
+        return () -> this.getDataContainerStream().get().map(translate).filter(searchFilter);
+    }
+
+    @Override
+    public Supplier<Stream<Person>> findAllPeople() {
+        return () -> this.getDataContainerStream().get().map(Map.Entry::getKey);
     }
 }

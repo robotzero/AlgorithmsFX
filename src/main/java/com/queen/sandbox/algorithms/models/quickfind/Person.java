@@ -16,7 +16,6 @@ public class Person {
     private Color color;
     private Circle circle;
     private List<Integer> friends = new ArrayList<>();
-    private boolean rectanglePressed;
     private Text nameText;
 
     public Person(int id, String name, Rectangle picture, Color color, Circle circle, Text nameText) {
@@ -54,13 +53,5 @@ public class Person {
 
     public Text getNameText() {
         return this.nameText;
-    }
-
-    public boolean isRectanglePressed() {
-        return rectanglePressed;
-    }
-
-    public void setRectanglePressed(boolean pressed) {
-        this.rectanglePressed = pressed;
     }
 }

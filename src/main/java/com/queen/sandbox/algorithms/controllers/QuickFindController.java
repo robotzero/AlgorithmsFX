@@ -2,6 +2,7 @@ package com.queen.sandbox.algorithms.controllers;
 
 import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
+import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
 import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
 import javafx.fxml.FXML;
@@ -35,7 +36,8 @@ public class QuickFindController implements Initializable {
     private Button reset;
 
     private MainContainerController mainContainerController;
-    private final QuickFind quickFind = new QuickFind();
+    private final QuickFindInMemoryRepository repository = new QuickFindInMemoryRepository();
+    private final QuickFind quickFind = new QuickFind(repository);
     private final LineFactory lineFactory = new LineFactory();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
     private List<Integer> pressedRectangles = new ArrayList<>();
@@ -55,25 +57,25 @@ public class QuickFindController implements Initializable {
     private void draw() {
         this.reset.setTranslateX(1820 - this.reset.getWidth());
         this.reset.setTranslateY(10);
-        Map<Person, Integer> dataContainer = quickFind.getDatContainer();
         this.friendsList.setText("Current connections: none");
         this.friendsList.setFont(this.font);
         this.friendsList.setTranslateX(20);
         this.friendsList.setTranslateY(30);
-        dataContainer.entrySet().forEach(entry -> {
-            Person person = entry.getKey();
+        this.repository.findAllPeople().get().forEach(person -> {
             this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
 
             person.getRectangle().setOnMouseEntered(e -> {
-                String friends = dataContainer.entrySet().stream()
-                        .map(Map.Entry::getKey)
-                        .filter(mapEntry -> mapEntry.getId() != person.getId())
+                String friends = this.repository.searchPerson(
+                        Map.Entry::getKey,
+                        mapEntry -> mapEntry.getId() != person.getId())
+                        .get()
                         .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
                         .map(Person::getName)
                         .collect(() ->
                             new StringBuilder(),
                             (StringBuilder sb1, String s1) -> sb1.append(s1 + ", "),
                             (StringBuilder sb1, StringBuilder sb2) -> sb1.append(sb2)).toString();
+
                 if (!friends.isEmpty()) {
                     this.friendsList.setText("Current connections: " + " " + friends);
                 } else {
@@ -104,9 +106,10 @@ public class QuickFindController implements Initializable {
                     if (this.pressedRectangles.contains(person.getId()) && !isNodeVisible.test(person.getCircle())) {
                         person.getCircle().setVisible(true);
                     } else {
-                        boolean isPersonConnectedToAnyone = dataContainer.entrySet().stream()
-                                .map(Map.Entry::getKey)
-                                .filter(mapentry -> mapentry.getId() != person.getId())
+                        boolean isPersonConnectedToAnyone = this.repository.searchPerson(
+                                Map.Entry::getKey,
+                                mapEntry -> mapEntry.getId() != person.getId())
+                                .get()
                                 .anyMatch(mapentry -> quickFind.connected(person, mapentry));
                         if (!isPersonConnectedToAnyone && this.pressedRectangles.size() != 1) {
                             person.getCircle().setVisible(false);
@@ -129,10 +132,10 @@ public class QuickFindController implements Initializable {
                                 .filter(personId -> person.getId() != personId)
                                 .findFirst()
                                 .ifPresent(personId -> {
-                                    dataContainer.entrySet().stream().filter(entryset -> entryset.getKey().getId() == personId).findFirst().ifPresent(toConnect -> {
-                                        if (!this.quickFind.connected(person, toConnect.getKey())) {
-                                            this.quickFind.union(person, toConnect.getKey());
-                                            Rectangle rootRectangle = toConnect.getKey().getRectangle();
+                                    this.repository.searchPerson(Map.Entry::getKey, personToConnect -> personToConnect.getId() == personId).get().findFirst().ifPresent(personToConnect -> {
+                                        if (!this.quickFind.connected(person, personToConnect)) {
+                                            this.quickFind.union(person, personToConnect);
+                                            Rectangle rootRectangle = personToConnect.getRectangle();
                                             Rectangle toAnimate = person.getRectangle();
                                             this.animationPlayer.play(
                                                     rootRectangle,
@@ -141,8 +144,8 @@ public class QuickFindController implements Initializable {
                                             this.lineFactory.addNewConnectionLine(
                                                     person.getCircle().centerXProperty(),
                                                     person.getCircle().centerYProperty(),
-                                                    toConnect.getKey().getCircle().centerXProperty(),
-                                                    toConnect.getKey().getCircle().centerYProperty(),
+                                                    personToConnect.getCircle().centerXProperty(),
+                                                    personToConnect.getCircle().centerYProperty(),
                                                     this.QFwindow
                                             );
                                             this.pressedRectangles.clear();
@@ -163,11 +166,11 @@ public class QuickFindController implements Initializable {
             if (numberOfPressedRectangles != 0 || numberOfPressedRectangles % 2 != 0) {
                 //@ TODO change array to observable list.
                 int pressedRectangleId = this.pressedRectangles.get(0);
-                dataContainer.entrySet().stream()
-                        .filter(entryset -> entryset.getKey().getId() == pressedRectangleId)
+                this.repository.searchPerson(Map.Entry::getKey, person -> person.getId() == pressedRectangleId)
+                        .get()
                         .findFirst()
-                        .ifPresent(entry -> {
-                            Circle circle = entry.getKey().getCircle();
+                        .ifPresent(person -> {
+                            Circle circle = person.getCircle();
                             if (!this.initialConnectionLine.isVisible()) {
                                 this.setInitialConnectionLinePref(line -> {
                                     line.setVisible(true);

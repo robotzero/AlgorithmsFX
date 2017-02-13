@@ -1,17 +1,12 @@
 package com.queen.sandbox.algorithms.models.quickfind;
-
-import com.github.javafaker.Faker;
-import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
 import com.queen.sandbox.algorithms.repositories.Repository;
-
-import java.util.Map;
 
 public class QuickFind {
 //    private int[] container;
-    private final Faker faker = new Faker();
-    private final Repository repository = new QuickFindInMemoryRepository();
+    private final Repository repository;
 
-    public QuickFind() {
+    public QuickFind(Repository repository) {
+        this.repository = repository;
 //        this.container = new int[10];
 //        for (int i = 0; i < 10; i++) {
 //            this.container[i] = i;
@@ -40,9 +35,5 @@ public class QuickFind {
 //                container[i] = qid;
 //            }
 //        }
-    }
-
-    public Map<Person, Integer> getDatContainer() {
-        return this.repository.getDataContainer();
     }
 }
