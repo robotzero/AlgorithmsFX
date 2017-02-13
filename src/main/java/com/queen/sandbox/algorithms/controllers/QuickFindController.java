@@ -71,10 +71,16 @@ public class QuickFindController implements Initializable {
                         .get()
                         .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
                         .map(Person::getName)
-                        .collect(() ->
-                            new StringBuilder(),
-                            (StringBuilder sb1, String s1) -> sb1.append(s1 + ", "),
-                            (StringBuilder sb1, StringBuilder sb2) -> sb1.append(sb2)).toString();
+                        .collect(StringBuilder::new,
+                            (StringBuilder sb1, String s1) -> {
+                                if (sb1.length() == 0) {
+                                    sb1.append(s1);
+                                } else {
+                                    sb1.append(", ").append(s1);
+                                }
+                             },
+                             StringBuilder::append)
+                        .toString();
 
                 if (!friends.isEmpty()) {
                     this.friendsList.setText("Current connections: " + " " + friends);
