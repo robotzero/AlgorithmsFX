@@ -5,6 +5,8 @@ import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
 import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -40,8 +42,8 @@ public class QuickFindController implements Initializable {
     private final QuickFind quickFind = new QuickFind(repository);
     private final LineFactory lineFactory = new LineFactory();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
-    private List<Integer> pressedRectangles = new ArrayList<>();
     private Predicate<Node> isNodeVisible = Node::isVisible;
+    private final ObservableList<Integer> pressedRectangles = FXCollections.observableList(new ArrayList<>());
     private Font font = new Font(30);
 
     public void init(MainContainerController mainContainerController) {
@@ -50,7 +52,6 @@ public class QuickFindController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.pressedRectangles = new ArrayList<>();
         this.draw();
     }
 
@@ -98,31 +99,18 @@ public class QuickFindController implements Initializable {
             });
 
             person.getRectangle().setOnMouseExited(e -> {
-                double rectangleX = e.getX();
-                double rectangleY = e.getY();
-
-                double centerX = person.getCircle().getCenterX();
-                double centerY = person.getCircle().getCenterY();
-                double radius = person.getCircle().getRadius();
-
-
-                double distance = Math.pow(centerX - rectangleX, 2) + Math.pow(centerY - rectangleY, 2);
-
-                if (!(distance < Math.pow(radius, 2))) {
-                    if (this.pressedRectangles.contains(person.getId()) && !isNodeVisible.test(person.getCircle())) {
-                        person.getCircle().setVisible(true);
-                    } else {
-                        boolean isPersonConnectedToAnyone = this.repository.searchPerson(
-                                Map.Entry::getKey,
-                                mapEntry -> mapEntry.getId() != person.getId())
-                                .get()
-                                .anyMatch(mapentry -> quickFind.connected(person, mapentry));
-                        if (!isPersonConnectedToAnyone && this.pressedRectangles.size() != 1) {
-                            person.getCircle().setVisible(false);
-                        }
+                if (this.pressedRectangles.contains(person.getId()) && !isNodeVisible.test(person.getCircle())) {
+                    person.getCircle().setVisible(true);
+                } else {
+                    boolean isPersonConnectedToAnyone = this.repository.searchPerson(
+                            Map.Entry::getKey,
+                            mapEntry -> mapEntry.getId() != person.getId())
+                            .get()
+                            .anyMatch(mapEntry -> quickFind.connected(person, mapEntry));
+                    if (!this.pressedRectangles.contains(person.getId()) && !isPersonConnectedToAnyone) {
+                        person.getCircle().setVisible(false);
                     }
                 }
-
                 this.friendsList.setVisible(false);
             });
 
