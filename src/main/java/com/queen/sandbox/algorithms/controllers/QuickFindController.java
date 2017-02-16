@@ -6,6 +6,7 @@ import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
 import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,7 +37,7 @@ public class QuickFindController implements Initializable {
 
     @FXML
     private Button reset;
-
+    
     private MainContainerController mainContainerController;
     private final QuickFindInMemoryRepository repository = new QuickFindInMemoryRepository();
     private final QuickFind quickFind = new QuickFind(repository);
@@ -148,51 +149,53 @@ public class QuickFindController implements Initializable {
                                 });
                             }
                         }
-                        if (isNodeVisible.test(initialConnectionLine)) {
-                            this.initialConnectionLine.setVisible(false);
-                        }
                     });
                     person.getCircle().setMouseTransparent(true);
                 });
 
-        this.QFwindow.setOnMouseMoved(e -> {
-            int numberOfPressedRectangles = this.pressedRectangles.size();
-            if (numberOfPressedRectangles != 0 || numberOfPressedRectangles % 2 != 0) {
-                //@ TODO change array to observable list.
-                int pressedRectangleId = this.pressedRectangles.get(0);
-                this.repository.searchPerson(Map.Entry::getKey, person -> person.getId() == pressedRectangleId)
-                        .get()
-                        .findFirst()
-                        .ifPresent(person -> {
-                            Circle circle = person.getCircle();
-                            if (!this.initialConnectionLine.isVisible()) {
-                                this.setInitialConnectionLinePref(line -> {
-                                    line.setVisible(true);
-                                    line.setStartX(circle.getCenterX());
-                                    line.setStartY(circle.getCenterY());
-                                });
-                            }
+        pressedRectangles.addListener((ListChangeListener<Integer>) c -> {
+            if (c.next()) {
+                int newSize = c.getAddedSize();
+                if (newSize != 0 || newSize % 2 != 0) {
+                    int pressedRectangleId = this.pressedRectangles.get(0);
+                    this.repository.searchPerson(Map.Entry::getKey, person -> person.getId() == pressedRectangleId)
+                            .get()
+                            .findFirst()
+                            .ifPresent(person -> {
+                                Circle circle = person.getCircle();
+                                if (!this.initialConnectionLine.isVisible()) {
+                                    this.setInitialConnectionLinePref(line -> {
+                                        line.setVisible(true);
+                                        line.setStartX(circle.getCenterX());
+                                        line.setStartY(circle.getCenterY());
+                                    });
+                                }
 
-                            if (this.initialConnectionLine.getStartX() != circle.getCenterX()) {
-                                this.setInitialConnectionLinePref(line -> {
-                                    line.setStartX(circle.getCenterX());
-                                    line.setStartY(circle.getCenterY());
-                                });
-                            }
-                            setInitialConnectionLinePref(line -> {
-                                line.setEndX(e.getX());
-                                line.setEndY(e.getY());
+                                if (this.initialConnectionLine.getStartX() != circle.getCenterX()) {
+                                    this.setInitialConnectionLinePref(line -> {
+                                        line.setStartX(circle.getCenterX());
+                                        line.setStartY(circle.getCenterY());
+                                    });
+                                }
                             });
-                        });
+                }
+                if (newSize == 0 && isNodeVisible.test(this.initialConnectionLine)) {
+                    setInitialConnectionLinePref(line -> {
+                        line.setVisible(false);
+                        line.setStartX(0);
+                        line.setStartY(0);
+                        line.setEndX(0);
+                        line.setEndY(0);
+                    });
+                }
             }
+        });
 
-            if (numberOfPressedRectangles == 0 && isNodeVisible.test(this.initialConnectionLine)) {
+        this.QFwindow.setOnMouseMoved(e -> {
+            if (isNodeVisible.test(this.initialConnectionLine)) {
                 setInitialConnectionLinePref(line -> {
-                    line.setVisible(false);
-                    line.setStartX(0);
-                    line.setStartY(0);
-                    line.setEndX(0);
-                    line.setEndY(0);
+                    line.setEndX(e.getX());
+                    line.setEndY(e.getY());
                 });
             }
         });
