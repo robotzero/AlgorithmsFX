@@ -37,7 +37,7 @@ public class QuickFindController implements Initializable {
 
     @FXML
     private Button reset;
-    
+
     private MainContainerController mainContainerController;
     private final QuickFindInMemoryRepository repository = new QuickFindInMemoryRepository();
     private final QuickFind quickFind = new QuickFind(repository);
