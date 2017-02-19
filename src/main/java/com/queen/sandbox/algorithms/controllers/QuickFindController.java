@@ -38,6 +38,9 @@ public class QuickFindController implements Initializable {
     @FXML
     private Button reset;
 
+    @FXML
+    private Text unionNotificationText;
+
     private MainContainerController mainContainerController;
     private final QuickFindInMemoryRepository repository = new QuickFindInMemoryRepository();
     private final QuickFind quickFind = new QuickFind(repository);
@@ -46,6 +49,7 @@ public class QuickFindController implements Initializable {
     private Predicate<Node> isNodeVisible = Node::isVisible;
     private final ObservableList<Integer> pressedRectangles = FXCollections.observableList(new ArrayList<>());
     private Font font = new Font(30);
+    private Font unionNotificationFont = new Font(10);
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -58,8 +62,11 @@ public class QuickFindController implements Initializable {
 
     private void draw() {
         this.reset.setTranslateX(1820 - this.reset.getWidth());
-        this.reset.setTranslateY(10);
-        this.friendsList.setText("Current connections: none");
+        this.unionNotificationText.setFont(unionNotificationFont);
+        this.unionNotificationText.setRotate(20);
+        this.unionNotificationText.xProperty().bind(this.initialConnectionLine.startXProperty().add(50));
+        this.unionNotificationText.yProperty().bind(this.initialConnectionLine.startYProperty().add(60));
+        this.unionNotificationText.rotateProperty().bind(this.initialConnectionLine.rotateProperty());
         this.friendsList.setFont(this.font);
         this.friendsList.setTranslateX(20);
         this.friendsList.setTranslateY(30);
@@ -68,8 +75,7 @@ public class QuickFindController implements Initializable {
 
             person.getRectangle().setOnMouseEntered(e -> {
                 String friends = this.repository.searchPerson(
-                        Map.Entry::getKey,
-                        mapEntry -> mapEntry.getId() != person.getId())
+                        entryPerson -> entryPerson.getId() != person.getId())
                         .get()
                         .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
                         .map(Person::getName)
@@ -104,10 +110,9 @@ public class QuickFindController implements Initializable {
                     person.getCircle().setVisible(true);
                 } else {
                     boolean isPersonConnectedToAnyone = this.repository.searchPerson(
-                            Map.Entry::getKey,
-                            mapEntry -> mapEntry.getId() != person.getId())
+                            entryPerson -> entryPerson.getId() != person.getId())
                             .get()
-                            .anyMatch(mapEntry -> quickFind.connected(person, mapEntry));
+                            .anyMatch(entryPerson -> quickFind.connected(person, entryPerson));
                     if (!this.pressedRectangles.contains(person.getId()) && !isPersonConnectedToAnyone) {
                         person.getCircle().setVisible(false);
                     }
@@ -126,7 +131,7 @@ public class QuickFindController implements Initializable {
                             .filter(personId -> person.getId() != personId)
                             .findFirst()
                             .ifPresent(personId -> {
-                                this.repository.searchPerson(Map.Entry::getKey, personToConnect -> personToConnect.getId() == personId).get().findFirst().ifPresent(personToConnect -> {
+                                this.repository.searchPerson(personToConnect -> personToConnect.getId() == personId).get().findFirst().ifPresent(personToConnect -> {
                                     if (!this.quickFind.connected(person, personToConnect)) {
                                         this.quickFind.union(person, personToConnect);
                                         Rectangle rootRectangle = personToConnect.getRectangle();
@@ -156,7 +161,7 @@ public class QuickFindController implements Initializable {
                 int newSize = c.getAddedSize();
                 if (newSize != 0 || newSize % 2 != 0) {
                     int pressedRectangleId = this.pressedRectangles.get(0);
-                    this.repository.searchPerson(Map.Entry::getKey, person -> person.getId() == pressedRectangleId)
+                    this.repository.searchPerson(person -> person.getId() == pressedRectangleId)
                             .get()
                             .findFirst()
                             .ifPresent(person -> {

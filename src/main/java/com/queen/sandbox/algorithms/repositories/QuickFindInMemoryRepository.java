@@ -62,8 +62,8 @@ public class QuickFindInMemoryRepository implements Repository {
     }
 
     @Override
-    public Supplier<Stream<Person>> searchPerson(Function<Map.Entry<Person, Integer>, Person> translate, Predicate<Person> searchFilter) {
-        return () -> this.getDataContainerStream().get().map(translate).filter(searchFilter);
+    public Supplier<Stream<Person>> searchPerson(Predicate<Person> searchFilter) {
+        return () -> this.getDataContainerStream().get().map(Map.Entry::getKey).filter(searchFilter);
     }
 
     @Override
