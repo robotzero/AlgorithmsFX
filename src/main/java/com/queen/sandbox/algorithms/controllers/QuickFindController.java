@@ -165,9 +165,11 @@ public class QuickFindController implements Initializable {
                                 Circle circle = person.getCircle();
                                 if (!this.initialConnectionLine.isVisible()) {
                                     this.setInitialConnectionLinePref(line -> {
-                                        line.setVisible(true);
                                         line.setStartX(circle.getCenterX());
                                         line.setStartY(circle.getCenterY());
+                                        line.setEndX(circle.getCenterX());
+                                        line.setEndY(circle.getCenterY());
+                                        line.setVisible(true);
                                     });
                                 }
 
@@ -175,6 +177,8 @@ public class QuickFindController implements Initializable {
                                     this.setInitialConnectionLinePref(line -> {
                                         line.setStartX(circle.getCenterX());
                                         line.setStartY(circle.getCenterY());
+                                        line.setEndX(circle.getCenterX());
+                                        line.setEndY(circle.getCenterY());
                                     });
                                 }
                             });
