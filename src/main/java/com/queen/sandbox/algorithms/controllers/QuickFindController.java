@@ -121,37 +121,35 @@ public class QuickFindController implements Initializable {
                     this.pressedRectangles.remove(new Integer(person.getId()));
                     person.getCircle().setVisible(false);
                 } else {
-                    if (numberOfPressedRectangles == 0 || numberOfPressedRectangles % 2 != 0) {
-                        this.pressedRectangles.add(person.getId());
-                        this.pressedRectangles.stream()
-                                .filter(personId -> person.getId() != personId)
-                                .findFirst()
-                                .ifPresent(personId -> {
-                                    this.repository.searchPerson(Map.Entry::getKey, personToConnect -> personToConnect.getId() == personId).get().findFirst().ifPresent(personToConnect -> {
-                                        if (!this.quickFind.connected(person, personToConnect)) {
-                                            this.quickFind.union(person, personToConnect);
-                                            Rectangle rootRectangle = personToConnect.getRectangle();
-                                            Rectangle toAnimate = person.getRectangle();
-                                            this.animationPlayer.play(
-                                                    rootRectangle,
-                                                    toAnimate
-                                            );
-                                            this.lineFactory.addNewConnectionLine(
-                                                    person.getCircle().centerXProperty(),
-                                                    person.getCircle().centerYProperty(),
-                                                    personToConnect.getCircle().centerXProperty(),
-                                                    personToConnect.getCircle().centerYProperty(),
-                                                    this.QFwindow
-                                            );
-                                            this.pressedRectangles.clear();
-                                        }
-                                    });
+                    this.pressedRectangles.add(person.getId());
+                    this.pressedRectangles.stream()
+                            .filter(personId -> person.getId() != personId)
+                            .findFirst()
+                            .ifPresent(personId -> {
+                                this.repository.searchPerson(Map.Entry::getKey, personToConnect -> personToConnect.getId() == personId).get().findFirst().ifPresent(personToConnect -> {
+                                    if (!this.quickFind.connected(person, personToConnect)) {
+                                        this.quickFind.union(person, personToConnect);
+                                        Rectangle rootRectangle = personToConnect.getRectangle();
+                                        Rectangle toAnimate = person.getRectangle();
+                                        this.animationPlayer.play(
+                                                rootRectangle,
+                                                toAnimate
+                                        );
+                                        this.lineFactory.addNewConnectionLine(
+                                                person.getCircle().centerXProperty(),
+                                                person.getCircle().centerYProperty(),
+                                                personToConnect.getCircle().centerXProperty(),
+                                                personToConnect.getCircle().centerYProperty(),
+                                                this.QFwindow
+                                        );
+                                        this.pressedRectangles.clear();
+                                    }
                                 });
-                            }
-                        }
-                    });
-                    person.getCircle().setMouseTransparent(true);
-                });
+                            });
+                }
+            });
+            person.getCircle().setMouseTransparent(true);
+        });
 
         pressedRectangles.addListener((ListChangeListener<Integer>) c -> {
             if (c.next()) {
