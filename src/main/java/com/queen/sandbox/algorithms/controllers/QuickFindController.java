@@ -172,15 +172,6 @@ public class QuickFindController implements Initializable {
                                         line.setVisible(true);
                                     });
                                 }
-
-                                if (this.initialConnectionLine.getStartX() != circle.getCenterX()) {
-                                    this.setInitialConnectionLinePref(line -> {
-                                        line.setStartX(circle.getCenterX());
-                                        line.setStartY(circle.getCenterY());
-                                        line.setEndX(circle.getCenterX());
-                                        line.setEndY(circle.getCenterY());
-                                    });
-                                }
                             });
                 }
                 if (newSize == 0 && isNodeVisible.test(this.initialConnectionLine)) {
