@@ -117,7 +117,7 @@ public class QuickFindController implements Initializable {
 
             person.getRectangle().setOnMousePressed(e -> {
                 int numberOfPressedRectangles = this.pressedRectangles.size();
-                if (this.pressedRectangles.contains(person.getId())) {
+                if (this.pressedRectangles.contains(person.getId()) && (numberOfPressedRectangles % 2 != 0)) {
                     this.pressedRectangles.remove(new Integer(person.getId()));
                     person.getCircle().setVisible(false);
                 } else {
