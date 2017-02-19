@@ -5,6 +5,8 @@ import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
 import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -50,6 +52,8 @@ public class QuickFindController implements Initializable {
     private final ObservableList<Integer> pressedRectangles = FXCollections.observableList(new ArrayList<>());
     private Font font = new Font(30);
     private Font unionNotificationFont = new Font(10);
+    private IntegerProperty xLineDifference = new SimpleIntegerProperty();
+    private IntegerProperty yLineDifference = new SimpleIntegerProperty();
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -63,8 +67,11 @@ public class QuickFindController implements Initializable {
     private void draw() {
         this.reset.setTranslateX(1820 - this.reset.getWidth());
         this.unionNotificationText.setFont(unionNotificationFont);
-        this.unionNotificationText.xProperty().bind(this.initialConnectionLine.startXProperty().add(50));
-        this.unionNotificationText.yProperty().bind(this.initialConnectionLine.startYProperty().add(60));
+        this.unionNotificationText.yProperty().bind(this.initialConnectionLine.startYProperty().add(this.initialConnectionLine.endYProperty()).divide(2));
+        this.unionNotificationText.xProperty().bind(this.initialConnectionLine.startXProperty().add(this.initialConnectionLine.endXProperty()).divide(2));
+        this.unionNotificationText.setRotate(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
+        this.xLineDifference.bind(this.initialConnectionLine.endXProperty().subtract(this.initialConnectionLine.startXProperty()));
+        this.yLineDifference.bind(this.initialConnectionLine.endYProperty().subtract(this.initialConnectionLine.startYProperty()));
         this.friendsList.setFont(this.font);
         this.friendsList.setTranslateX(20);
         this.friendsList.setTranslateY(30);
@@ -192,7 +199,8 @@ public class QuickFindController implements Initializable {
                 setInitialConnectionLinePref(line -> {
                     line.setEndX(e.getX());
                     line.setEndY(e.getY());
-                    this.calculateLineAngle(line.getStartX(), line.getStartY(), e.getX(), e.getY());
+                    this.unionNotificationText.setRotate(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
+                    this.unionNotificationText.setVisible(true);
                 });
             }
         });
@@ -200,18 +208,5 @@ public class QuickFindController implements Initializable {
 
     private void setInitialConnectionLinePref(Consumer<Line> newSetup) {
             newSetup.accept(this.initialConnectionLine);
-    }
-
-    private void calculateLineMiddleForText() {
-        double textWidth = this.unionNotificationText.getLayoutBounds().getWidth();
-        double textHeight = this.unionNotificationText.getLayoutBounds().getHeight();
-
-    }
-
-    private void calculateLineAngle(double startX, double startY, double endX, double endY) {
-        double xDiff = endX - startX;
-        double yDiff = endY - startY;
-        this.unionNotificationText.setRotate(Math.toDegrees(Math.atan2(yDiff, xDiff)));
-        this.unionNotificationText.setVisible(true);
     }
 }
