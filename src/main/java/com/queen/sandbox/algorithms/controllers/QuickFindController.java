@@ -7,9 +7,7 @@ import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -50,7 +48,7 @@ public class QuickFindController implements Initializable {
     private final LineFactory lineFactory = new LineFactory();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
     private Predicate<Node> isNodeVisible = Node::isVisible;
-    private final ObservableList<Integer> pressedRectangles = FXCollections.observableList(new ArrayList<>());
+    private final ObservableSet<Integer> pressedRectangles = FXCollections.observableSet(new HashSet<>());
     private Font font = new Font(30);
     private Font unionNotificationFont = new Font(20);
     private IntegerProperty xLineDifference = new SimpleIntegerProperty();
@@ -135,7 +133,7 @@ public class QuickFindController implements Initializable {
             person.getRectangle().setOnMousePressed(e -> {
                 int numberOfPressedRectangles = this.pressedRectangles.size();
                 if (this.pressedRectangles.contains(person.getId()) && (numberOfPressedRectangles % 2 != 0)) {
-                    this.pressedRectangles.remove(new Integer(person.getId()));
+                    this.pressedRectangles.remove(person.getId());
                     person.getCircle().setVisible(false);
                 } else {
                     this.pressedRectangles.add(person.getId());
@@ -168,37 +166,35 @@ public class QuickFindController implements Initializable {
             person.getCircle().setMouseTransparent(true);
         });
 
-        pressedRectangles.addListener((ListChangeListener<Integer>) c -> {
-            if (c.next()) {
-                int newSize = c.getAddedSize();
-                if (newSize != 0 || newSize % 2 != 0) {
-                    int pressedRectangleId = this.pressedRectangles.get(0);
-                    this.repository.searchPerson(person -> person.getId() == pressedRectangleId)
-                            .get()
-                            .findFirst()
-                            .ifPresent(person -> {
-                                Circle circle = person.getCircle();
-                                if (!this.initialConnectionLine.isVisible()) {
-                                    this.setInitialConnectionLinePref(line -> {
-                                        line.setStartX(circle.getCenterX());
-                                        line.setStartY(circle.getCenterY());
-                                        line.setEndX(circle.getCenterX());
-                                        line.setEndY(circle.getCenterY());
-                                        line.setVisible(true);
-                                    });
-                                }
-                            });
-                }
-                if (newSize == 0 && isNodeVisible.test(this.initialConnectionLine)) {
-                    setInitialConnectionLinePref(line -> {
-                        line.setVisible(false);
-                        line.setStartX(0);
-                        line.setStartY(0);
-                        line.setEndX(0);
-                        line.setEndY(0);
-                    });
-                    this.unionNotificationText.setVisible(false);
-                }
+        pressedRectangles.addListener((SetChangeListener<Integer>) c -> {
+            int newSize = c.getSet().size();
+            if (newSize != 0 || newSize % 2 != 0) {
+                int pressedRectangleId = this.pressedRectangles.stream().findAny().get();
+                this.repository.searchPerson(person -> person.getId() == pressedRectangleId)
+                        .get()
+                        .findFirst()
+                        .ifPresent(person -> {
+                            Circle circle = person.getCircle();
+                            if (!this.initialConnectionLine.isVisible()) {
+                                this.setInitialConnectionLinePref(line -> {
+                                    line.setStartX(circle.getCenterX());
+                                    line.setStartY(circle.getCenterY());
+                                    line.setEndX(circle.getCenterX());
+                                    line.setEndY(circle.getCenterY());
+                                    line.setVisible(true);
+                                });
+                            }
+                        });
+            }
+            if (newSize == 0 && isNodeVisible.test(this.initialConnectionLine)) {
+                setInitialConnectionLinePref(line -> {
+                    line.setVisible(false);
+                    line.setStartX(0);
+                    line.setStartY(0);
+                    line.setEndX(0);
+                    line.setEndY(0);
+                });
+                this.unionNotificationText.setVisible(false);
             }
         });
 
