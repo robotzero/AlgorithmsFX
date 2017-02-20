@@ -20,6 +20,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 
 import java.net.URL;
 import java.util.*;
@@ -51,9 +52,10 @@ public class QuickFindController implements Initializable {
     private Predicate<Node> isNodeVisible = Node::isVisible;
     private final ObservableList<Integer> pressedRectangles = FXCollections.observableList(new ArrayList<>());
     private Font font = new Font(30);
-    private Font unionNotificationFont = new Font(10);
+    private Font unionNotificationFont = new Font(20);
     private IntegerProperty xLineDifference = new SimpleIntegerProperty();
     private IntegerProperty yLineDifference = new SimpleIntegerProperty();
+    private final Rotate textRotateTransform = new Rotate();
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -69,9 +71,14 @@ public class QuickFindController implements Initializable {
         this.unionNotificationText.setFont(unionNotificationFont);
         this.unionNotificationText.yProperty().bind(this.initialConnectionLine.startYProperty().add(this.initialConnectionLine.endYProperty()).divide(2));
         this.unionNotificationText.xProperty().bind(this.initialConnectionLine.startXProperty().add(this.initialConnectionLine.endXProperty()).divide(2));
-        this.unionNotificationText.setRotate(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
         this.xLineDifference.bind(this.initialConnectionLine.endXProperty().subtract(this.initialConnectionLine.startXProperty()));
         this.yLineDifference.bind(this.initialConnectionLine.endYProperty().subtract(this.initialConnectionLine.startYProperty()));
+        textRotateTransform.setAngle(0);
+        textRotateTransform.setPivotX(this.unionNotificationText.getX());
+        textRotateTransform.setPivotY(this.unionNotificationText.getY());
+        textRotateTransform.pivotXProperty().bind(this.unionNotificationText.xProperty());
+        textRotateTransform.pivotYProperty().bind(this.unionNotificationText.yProperty());
+        this.unionNotificationText.getTransforms().add(textRotateTransform);
         this.friendsList.setFont(this.font);
         this.friendsList.setTranslateX(20);
         this.friendsList.setTranslateY(30);
@@ -190,6 +197,7 @@ public class QuickFindController implements Initializable {
                         line.setEndX(0);
                         line.setEndY(0);
                     });
+                    this.unionNotificationText.setVisible(false);
                 }
             }
         });
@@ -199,9 +207,11 @@ public class QuickFindController implements Initializable {
                 setInitialConnectionLinePref(line -> {
                     line.setEndX(e.getX());
                     line.setEndY(e.getY());
-                    this.unionNotificationText.setRotate(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
-                    this.unionNotificationText.setVisible(true);
                 });
+                textRotateTransform.angleProperty().setValue(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
+                if (!this.isNodeVisible.test(this.unionNotificationText)) {
+                    this.unionNotificationText.setVisible(true);
+                }
             }
         });
     }
