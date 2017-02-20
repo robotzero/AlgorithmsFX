@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
@@ -100,6 +101,17 @@ public class QuickFindController implements Initializable {
                              StringBuilder::append)
                         .toString();
 
+                if (isNodeVisible.test(this.initialConnectionLine)) {
+                    this.repository.searchPerson(entryPerson -> entryPerson.getId() != person.getId())
+                            .get()
+                            .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
+                            .map(entryPerson -> entryPerson.getRectangle())
+                            .filter(rectangle -> rectangle.contains(new Point2D(this.initialConnectionLine.getStartX(), this.initialConnectionLine.getStartY())))
+                            .findFirst().ifPresent(rectangle -> {
+                        System.out.println("ALREADY CONNECTED");
+                    });
+                }
+
                 if (!friends.isEmpty()) {
                     this.friendsList.setText("Current connections: " + " " + friends);
                 } else {
@@ -169,7 +181,7 @@ public class QuickFindController implements Initializable {
         pressedRectangles.addListener((SetChangeListener<Integer>) c -> {
             int newSize = c.getSet().size();
             if (newSize != 0 || newSize % 2 != 0) {
-                int pressedRectangleId = this.pressedRectangles.stream().findAny().get();
+                int pressedRectangleId = this.pressedRectangles.stream().findFirst().get();
                 this.repository.searchPerson(person -> person.getId() == pressedRectangleId)
                         .get()
                         .findFirst()
