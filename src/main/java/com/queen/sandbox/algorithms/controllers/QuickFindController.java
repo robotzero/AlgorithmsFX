@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class QuickFindController implements Initializable {
 
@@ -90,16 +91,7 @@ public class QuickFindController implements Initializable {
                         .get()
                         .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
                         .map(Person::getName)
-                        .collect(StringBuilder::new,
-                            (StringBuilder sb1, String s1) -> {
-                                if (sb1.length() == 0) {
-                                    sb1.append(s1);
-                                } else {
-                                    sb1.append(", ").append(s1);
-                                }
-                             },
-                             StringBuilder::append)
-                        .toString();
+                        .collect(Collectors.joining(", ", "Current connections: ", "."));
 
                 if (isNodeVisible.test(this.initialConnectionLine)) {
                     this.repository.searchPerson(entryPerson -> entryPerson.getId() != person.getId())
@@ -111,18 +103,12 @@ public class QuickFindController implements Initializable {
                         System.out.println("ALREADY CONNECTED");
                     });
                 }
-
-                if (!friends.isEmpty()) {
-                    this.friendsList.setText("Current connections: " + " " + friends);
-                } else {
-                    this.friendsList.setText("Current connections: none");
-                }
-
+                this.friendsList.setText(friends);
                 if(!isNodeVisible.test(person.getCircle())) {
                     person.getCircle().setVisible(true);
                 }
 
-                if (!isNodeVisible.test(this.friendsList)) {
+                if (!isNodeVisible.test(this.friendsList) && !friends.contentEquals("Current connections: .")) {
                     this.friendsList.setVisible(true);
                 }
             });
