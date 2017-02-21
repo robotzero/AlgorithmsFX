@@ -97,10 +97,13 @@ public class QuickFindController implements Initializable {
                     this.repository.searchPerson(entryPerson -> entryPerson.getId() != person.getId())
                             .get()
                             .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
-                            .map(entryPerson -> entryPerson.getRectangle())
-                            .filter(rectangle -> rectangle.contains(new Point2D(this.initialConnectionLine.getStartX(), this.initialConnectionLine.getStartY())))
+                            .map(entryPerson -> entryPerson.getRectangle().getBoundsInParent())
+                            .filter(rectangleBounds -> rectangleBounds.contains(new Point2D(this.initialConnectionLine.getStartX(), this.initialConnectionLine.getStartY())))
                             .findFirst().ifPresent(rectangle -> {
-                        System.out.println("ALREADY CONNECTED");
+                                textRotateTransform.angleProperty().setValue(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
+                                if (!this.isNodeVisible.test(this.unionNotificationText)) {
+                                    this.unionNotificationText.setVisible(true);
+                                }
                     });
                 }
                 this.friendsList.setText(friends);
@@ -126,6 +129,9 @@ public class QuickFindController implements Initializable {
                     }
                 }
                 this.friendsList.setVisible(false);
+                if (this.isNodeVisible.test(this.unionNotificationText)) {
+                    this.unionNotificationText.setVisible(false);
+                }
             });
 
             person.getRectangle().setOnMousePressed(e -> {
@@ -202,9 +208,9 @@ public class QuickFindController implements Initializable {
                     line.setEndX(e.getX());
                     line.setEndY(e.getY());
                 });
-                textRotateTransform.angleProperty().setValue(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
-                if (!this.isNodeVisible.test(this.unionNotificationText)) {
-                    this.unionNotificationText.setVisible(true);
+
+                if (this.isNodeVisible.test(this.unionNotificationText)) {
+                    textRotateTransform.angleProperty().setValue(Math.toDegrees(Math.atan2(yLineDifference.doubleValue(), xLineDifference.doubleValue())));
                 }
             }
         });
