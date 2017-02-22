@@ -214,6 +214,14 @@ public class QuickFindController implements Initializable {
                 }
             }
         });
+
+        this.reset.setOnMouseClicked(e -> {
+            this.pressedRectangles.clear();
+            this.initialConnectionLine.setVisible(false);
+            this.unionNotificationText.setVisible(false);
+            this.QFwindow.getChildren().removeAll(this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Line.class)).collect(Collectors.toList()));
+            this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Circle.class)).forEach(circle -> circle.setVisible(false));
+        });
     }
 
     private void setInitialConnectionLinePref(Consumer<Line> newSetup) {
