@@ -23,6 +23,7 @@ public class QuickFindInMemoryRepository implements Repository {
             .mapToObj(id -> {
                 int rectangleX = (id + 192) * id;
                 Rectangle rectangle = new Rectangle(100, 100, 100, 100);
+                rectangle.setId(Integer.toString(rectangleX));
                 rectangle.setStroke(Color.BLACK);
                 rectangle.setX(0);
                 rectangle.setY(0);

@@ -221,6 +221,16 @@ public class QuickFindController implements Initializable {
             this.unionNotificationText.setVisible(false);
             this.QFwindow.getChildren().removeAll(this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Line.class)).collect(Collectors.toList()));
             this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Circle.class)).forEach(circle -> circle.setVisible(false));
+            this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Rectangle.class)).forEach(rectangle -> {
+                ((Rectangle)rectangle).setX(0);
+                ((Rectangle)rectangle).setY(0);
+                rectangle.setTranslateX(Integer.parseInt(rectangle.getId()));
+                rectangle.setTranslateY(200);
+            });
+            this.repository.getDataContainerStream().get().forEach(entry -> {
+                int id = entry.getKey().getId();
+                entry.setValue(id);
+            });
         });
     }
 
