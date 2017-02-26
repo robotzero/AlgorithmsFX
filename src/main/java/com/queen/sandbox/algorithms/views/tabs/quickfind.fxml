@@ -14,7 +14,7 @@
            style="-fx-background-color: wheat;">
     <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
     <Pane fx:id="QFwindow" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: wheat;">
-        <Line fx:id="initialConnectionLine" visible="false" mouseTransparent="true"/>
+        <Line fx:id="initialConnectionLine" id="initialConnectionLine" visible="false" mouseTransparent="true"/>
         <Text fx:id="friendsList" visible="false" text="Current connections: none."/>
         <Text fx:id="unionNotificationText" visible="false" text="Already connected."/>
         <Button fx:id="reset" text="Reset"/>

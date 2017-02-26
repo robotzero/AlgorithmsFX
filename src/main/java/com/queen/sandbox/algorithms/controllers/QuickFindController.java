@@ -3,8 +3,8 @@ package com.queen.sandbox.algorithms.controllers;
 import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
-import com.queen.sandbox.algorithms.views.grahpics.AnimationPlayer;
-import com.queen.sandbox.algorithms.views.grahpics.LineFactory;
+import com.queen.sandbox.algorithms.views.graphics.AnimationPlayer;
+import com.queen.sandbox.algorithms.views.graphics.LineObjectPool;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.*;
@@ -47,7 +47,7 @@ public class QuickFindController implements Initializable {
     private MainContainerController mainContainerController;
     private final QuickFindInMemoryRepository repository = new QuickFindInMemoryRepository();
     private final QuickFind quickFind = new QuickFind(repository);
-    private final LineFactory lineFactory = new LineFactory();
+    private final LineObjectPool lineObjectPool = new LineObjectPool();
     private final AnimationPlayer animationPlayer = new AnimationPlayer();
     private Predicate<Node> isNodeVisible = Node::isVisible;
     private final ObservableSet<Integer> pressedRectangles = FXCollections.observableSet(new HashSet<>());
@@ -154,7 +154,7 @@ public class QuickFindController implements Initializable {
                                                 rootRectangle,
                                                 toAnimate
                                         );
-                                        this.lineFactory.addNewConnectionLine(
+                                        this.lineObjectPool.addNewConnectionLine(
                                                 person.getCircle().centerXProperty(),
                                                 person.getCircle().centerYProperty(),
                                                 personToConnect.getCircle().centerXProperty(),
@@ -219,8 +219,9 @@ public class QuickFindController implements Initializable {
             this.pressedRectangles.clear();
             this.initialConnectionLine.setVisible(false);
             this.unionNotificationText.setVisible(false);
-            this.QFwindow.getChildren().removeAll(this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Line.class)).collect(Collectors.toList()));
-            this.QFwindow.getChildren().add(this.initialConnectionLine);
+            List<Line> linesToRemove =  this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Line.class)).filter(line -> line.getId() == null).map(line -> (Line) line).collect(Collectors.toList());
+            this.QFwindow.getChildren().removeAll(linesToRemove);
+            this.lineObjectPool.removeNewConnectionLine(linesToRemove);
             this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Circle.class)).forEach(circle -> circle.setVisible(false));
             this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Rectangle.class)).forEach(rectangle -> {
                 ((Rectangle)rectangle).setX(0);

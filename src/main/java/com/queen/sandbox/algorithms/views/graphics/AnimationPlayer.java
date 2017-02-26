@@ -1,4 +1,4 @@
-package com.queen.sandbox.algorithms.views.grahpics;
+package com.queen.sandbox.algorithms.views.graphics;
 
 import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
