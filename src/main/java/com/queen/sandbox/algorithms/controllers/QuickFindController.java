@@ -220,6 +220,7 @@ public class QuickFindController implements Initializable {
             this.initialConnectionLine.setVisible(false);
             this.unionNotificationText.setVisible(false);
             this.QFwindow.getChildren().removeAll(this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Line.class)).collect(Collectors.toList()));
+            this.QFwindow.getChildren().add(this.initialConnectionLine);
             this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Circle.class)).forEach(circle -> circle.setVisible(false));
             this.QFwindow.getChildren().stream().filter(child -> child.getClass().equals(Rectangle.class)).forEach(rectangle -> {
                 ((Rectangle)rectangle).setX(0);
