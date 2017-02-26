@@ -227,10 +227,7 @@ public class QuickFindController implements Initializable {
                 rectangle.setTranslateX(Integer.parseInt(rectangle.getId()));
                 rectangle.setTranslateY(200);
             });
-            this.repository.getDataContainerStream().get().forEach(entry -> {
-                int id = entry.getKey().getId();
-                entry.setValue(id);
-            });
+            this.repository.resetAllConnections();
         });
     }
 

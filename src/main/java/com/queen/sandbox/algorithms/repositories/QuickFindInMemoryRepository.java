@@ -9,7 +9,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -53,22 +52,32 @@ public class QuickFindInMemoryRepository implements Repository {
             .collect(Collectors.toMap(entry -> entry, Person::getId));
 
 
-    public Supplier<Stream<Map.Entry<Person, Integer>>> getDataContainerStream() {
-        return () -> this.dataContainer.entrySet().stream();
-    }
-
-    @Override
-    public Map<Person, Integer> getDataContainer() {
-        return dataContainer;
-    }
-
     @Override
     public Supplier<Stream<Person>> searchPerson(Predicate<Person> searchFilter) {
-        return () -> this.getDataContainerStream().get().map(Map.Entry::getKey).filter(searchFilter);
+        return () -> this.dataContainer.entrySet().stream().map(Map.Entry::getKey).filter(searchFilter);
     }
 
     @Override
     public Supplier<Stream<Person>> findAllPeople() {
-        return () -> this.getDataContainerStream().get().map(Map.Entry::getKey);
+        return () -> this.dataContainer.entrySet().stream().map(Map.Entry::getKey);
+    }
+
+    @Override
+    public Integer getPersonConnectedToId(Person person) {
+        return this.dataContainer.get(person);
+    }
+
+    @Override
+    public void updatePersonConnection(int toUpdate, int newId) {
+        this.dataContainer.forEach((person, id) -> {
+            if (toUpdate == id) {
+                this.dataContainer.replace(person, newId);
+            }
+        });
+    }
+
+    @Override
+    public void resetAllConnections() {
+        this.dataContainer.entrySet().forEach(entry -> entry.setValue(entry.getKey().getId()));
     }
 }
