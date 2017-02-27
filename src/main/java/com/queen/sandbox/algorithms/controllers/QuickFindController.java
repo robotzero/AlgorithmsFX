@@ -1,6 +1,5 @@
 package com.queen.sandbox.algorithms.controllers;
 
-import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
 import com.queen.sandbox.algorithms.views.dispatch.Dispatcher;
@@ -119,6 +118,7 @@ public class QuickFindController implements Initializable {
             });
 
             person.getRectangle().setOnMouseExited(e -> {
+                this.dispatcher.mouseExited(person);
                 if (this.pressedRectangles.contains(person.getId()) && !isNodeVisible.test(person.getCircle())) {
                     person.getCircle().setVisible(true);
                 } else {
@@ -130,7 +130,7 @@ public class QuickFindController implements Initializable {
                         person.getCircle().setVisible(false);
                     }
                 }
-                this.friendsList.setVisible(false);
+
                 if (this.isNodeVisible.test(this.unionNotificationText)) {
                     this.unionNotificationText.setVisible(false);
                 }
