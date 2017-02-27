@@ -3,8 +3,11 @@ package com.queen.sandbox.algorithms.controllers;
 import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.models.quickfind.QuickFind;
 import com.queen.sandbox.algorithms.repositories.QuickFindInMemoryRepository;
+import com.queen.sandbox.algorithms.views.dispatch.Dispatcher;
 import com.queen.sandbox.algorithms.views.graphics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.graphics.LineObjectPool;
+import com.queen.sandbox.algorithms.views.store.FriendsListStore;
+import com.queen.sandbox.algorithms.views.view.FriendsListView;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.*;
@@ -56,6 +59,9 @@ public class QuickFindController implements Initializable {
     private IntegerProperty xLineDifference = new SimpleIntegerProperty();
     private IntegerProperty yLineDifference = new SimpleIntegerProperty();
     private final Rotate textRotateTransform = new Rotate();
+    private Dispatcher dispatcher;
+    private FriendsListView friendsListView;
+    private FriendsListStore friendsListStore;
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -63,6 +69,12 @@ public class QuickFindController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.dispatcher = Dispatcher.getInstance();
+        this.friendsListStore = new FriendsListStore(this.repository, this.quickFind);
+        this.friendsListView = new FriendsListView(this.friendsList);
+        this.friendsListStore.registerView(this.friendsListView);
+        dispatcher.registerStore(this.friendsListStore);
+        this.friendsListView.render();
         this.draw();
     }
 
@@ -86,12 +98,7 @@ public class QuickFindController implements Initializable {
             this.QFwindow.getChildren().addAll(person.getRectangle(), person.getCircle(), person.getNameText());
 
             person.getRectangle().setOnMouseEntered(e -> {
-                String friends = this.repository.searchPerson(
-                        entryPerson -> entryPerson.getId() != person.getId())
-                        .get()
-                        .filter(entryPerson -> this.quickFind.connected(entryPerson, person))
-                        .map(Person::getName)
-                        .collect(Collectors.joining(", ", "Current connections: ", "."));
+                dispatcher.mouseEntered(person);
 
                 if (isNodeVisible.test(this.initialConnectionLine)) {
                     this.repository.searchPerson(entryPerson -> entryPerson.getId() != person.getId())
@@ -106,13 +113,8 @@ public class QuickFindController implements Initializable {
                                 }
                     });
                 }
-                this.friendsList.setText(friends);
                 if(!isNodeVisible.test(person.getCircle())) {
                     person.getCircle().setVisible(true);
-                }
-
-                if (!isNodeVisible.test(this.friendsList) && !friends.contentEquals("Current connections: .")) {
-                    this.friendsList.setVisible(true);
                 }
             });
 
