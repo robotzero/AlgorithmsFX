@@ -6,7 +6,11 @@ import com.queen.sandbox.algorithms.views.dispatch.Dispatcher;
 import com.queen.sandbox.algorithms.views.graphics.AnimationPlayer;
 import com.queen.sandbox.algorithms.views.graphics.LineObjectPool;
 import com.queen.sandbox.algorithms.views.store.FriendsListStore;
+import com.queen.sandbox.algorithms.views.store.RedCircleStore;
+import com.queen.sandbox.algorithms.views.store.Store;
 import com.queen.sandbox.algorithms.views.view.FriendsListView;
+import com.queen.sandbox.algorithms.views.view.RedCircleView;
+import com.queen.sandbox.algorithms.views.view.View;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.*;
@@ -59,8 +63,10 @@ public class QuickFindController implements Initializable {
     private IntegerProperty yLineDifference = new SimpleIntegerProperty();
     private final Rotate textRotateTransform = new Rotate();
     private Dispatcher dispatcher;
-    private FriendsListView friendsListView;
-    private FriendsListStore friendsListStore;
+    private View friendsListView;
+    private Store friendsListStore;
+    private Store redCircleStore;
+    private View redCircleView;
 
     public void init(MainContainerController mainContainerController) {
         this.mainContainerController = mainContainerController;
@@ -72,7 +78,11 @@ public class QuickFindController implements Initializable {
         this.friendsListStore = new FriendsListStore(this.repository, this.quickFind);
         this.friendsListView = new FriendsListView(this.friendsList);
         this.friendsListStore.registerView(this.friendsListView);
+        this.redCircleStore = new RedCircleStore();
+        this.redCircleView = new RedCircleView();
+        this.redCircleStore.registerView(this.redCircleView);
         dispatcher.registerStore(this.friendsListStore);
+        dispatcher.registerStore(this.redCircleStore);
         this.friendsListView.render();
         this.draw();
     }
@@ -111,9 +121,6 @@ public class QuickFindController implements Initializable {
                                     this.unionNotificationText.setVisible(true);
                                 }
                     });
-                }
-                if(!isNodeVisible.test(person.getCircle())) {
-                    person.getCircle().setVisible(true);
                 }
             });
 
