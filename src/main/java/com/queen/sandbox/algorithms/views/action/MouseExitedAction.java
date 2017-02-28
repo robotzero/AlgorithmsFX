@@ -7,4 +7,8 @@ public class MouseExitedAction extends Action {
         super(ActionType.MOUSE_EXITED);
         this.mouseExited = mouseExited;
     }
+
+    public MouseExited getMouseExited() {
+        return mouseExited;
+    }
 }

@@ -78,7 +78,7 @@ public class QuickFindController implements Initializable {
         this.friendsListStore = new FriendsListStore(this.repository, this.quickFind);
         this.friendsListView = new FriendsListView(this.friendsList);
         this.friendsListStore.registerView(this.friendsListView);
-        this.redCircleStore = new RedCircleStore();
+        this.redCircleStore = new RedCircleStore(this.repository, this.quickFind);
         this.redCircleView = new RedCircleView();
         this.redCircleStore.registerView(this.redCircleView);
         dispatcher.registerStore(this.friendsListStore);
@@ -125,29 +125,17 @@ public class QuickFindController implements Initializable {
             });
 
             person.getRectangle().setOnMouseExited(e -> {
-                this.dispatcher.mouseExited(person);
-                if (this.pressedRectangles.contains(person.getId()) && !isNodeVisible.test(person.getCircle())) {
-                    person.getCircle().setVisible(true);
-                } else {
-                    boolean isPersonConnectedToAnyone = this.repository.searchPerson(
-                            entryPerson -> entryPerson.getId() != person.getId())
-                            .get()
-                            .anyMatch(entryPerson -> quickFind.connected(person, entryPerson));
-                    if (!this.pressedRectangles.contains(person.getId()) && !isPersonConnectedToAnyone) {
-                        person.getCircle().setVisible(false);
-                    }
-                }
-
+                this.dispatcher.mouseExited(person, this.pressedRectangles);
                 if (this.isNodeVisible.test(this.unionNotificationText)) {
                     this.unionNotificationText.setVisible(false);
                 }
             });
 
             person.getRectangle().setOnMousePressed(e -> {
+                dispatcher.mousePressed(person, this.pressedRectangles);
                 int numberOfPressedRectangles = this.pressedRectangles.size();
                 if (this.pressedRectangles.contains(person.getId()) && (numberOfPressedRectangles % 2 != 0)) {
                     this.pressedRectangles.remove(person.getId());
-                    person.getCircle().setVisible(false);
                 } else {
                     this.pressedRectangles.add(person.getId());
                     this.pressedRectangles.stream()

@@ -3,6 +3,7 @@ package com.queen.sandbox.algorithms.views.dispatch;
 import com.queen.sandbox.algorithms.models.quickfind.Person;
 import com.queen.sandbox.algorithms.views.action.*;
 import com.queen.sandbox.algorithms.views.store.Store;
+import javafx.collections.ObservableSet;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,9 +23,6 @@ public class Dispatcher {
         stores.add(store);
     }
 
-    /**
-     * Menu item selected handler
-     */
     public void mouseMoved(MouseMoved mouseMoved) {
         dispatchAction(new MouseMovedAction(mouseMoved));
     }
@@ -33,8 +31,12 @@ public class Dispatcher {
         dispatchAction(new MouseEnteredAction(new MouseEntered(person)));
     }
 
-    public void mouseExited(Person person) {
-        dispatchAction(new MouseExitedAction(new MouseExited()));
+    public void mouseExited(Person person, ObservableSet<Integer> pressedRectangles) {
+        dispatchAction(new MouseExitedAction(new MouseExited(person, pressedRectangles)));
+    }
+
+    public void mousePressed(Person person, ObservableSet<Integer> pressedRectangles) {
+        dispatchAction(new MousePressedAction(new MousePressed(person, pressedRectangles)));
     }
 //    public void menuItemSelected(MenuItem menuItem) {
 //        dispatchAction(new MenuAction(menuItem));
