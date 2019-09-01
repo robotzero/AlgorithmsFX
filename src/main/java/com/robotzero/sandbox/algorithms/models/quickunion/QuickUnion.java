@@ -1,4 +1,4 @@
-package com.queen.sandbox.algorithms.models.quickunion;
+package com.robotzero.sandbox.algorithms.models.quickunion;
 
 public class QuickUnion {
 
